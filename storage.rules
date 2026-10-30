@@ -1,0 +1,61 @@
+// storage.rules — proyecto Firebase compartido `videofeed-grupo`.
+//
+// Contiene las reglas de VideoFeed (copiadas de su repo) y las de Hamtimer.
+// Desplegar reemplaza las del proyecto completo: no borrar las de VideoFeed.
+// Desplegar: firebase deploy --only storage
+//
+// storage.rules
+//
+// Tarea D-04: Reglas de seguridad para Firebase Storage.
+//
+// Directrices del equipo (README.md):
+// - Cada usuario solo puede escribir en su carpeta asignada: videos/{uid}/{timestamp}.mp4
+// - Límite de tamaño: máximo 50 MB por video (tarea U-04).
+// - Tipo de contenido: restringido a formato video.
+// - Acceso de lectura: solo para usuarios autenticados.
+// - Solo el propietario puede eliminar su archivo de Storage.
+//
+// Se publican en la consola: Firebase Console → Storage → Reglas.
+
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /videos/{uid}/{archivo} {
+      // Lectura: permitida a cualquier usuario que haya iniciado sesión
+      allow read: if request.auth != null;
+
+      // Subida de video:
+      // 1. Debe estar autenticado.
+      // 2. Solo puede escribir en la ruta con su propio UID.
+      // 3. El tamaño debe ser mayor a 0 y menor o igual a 50 MB.
+      // 4. El tipo MIME debe ser de video (video/*).
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size > 0
+        && request.resource.size <= 50 * 1024 * 1024
+        && request.resource.contentType.matches('video/.*');
+
+      // Eliminación: únicamente el autor puede borrar su propio archivo
+      allow delete: if request.auth != null
+        && request.auth.uid == uid;
+
+      // Inmutabilidad: una vez subido, el video no se puede sobrescribir
+      allow update: if false;
+    }
+
+    // ===================================================================
+    // Hamtimer: fotos con filtro del feed, hamtimer/posts/{uid}/{archivo}.png
+    // ===================================================================
+    match /hamtimer/posts/{uid}/{archivo} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size > 0
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType == 'image/png';
+      allow update: if false;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

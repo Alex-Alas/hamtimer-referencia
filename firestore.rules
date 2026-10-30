@@ -1,0 +1,175 @@
+// firestore.rules — proyecto Firebase compartido `videofeed-grupo`.
+//
+// IMPORTANTE: este proyecto lo usan VideoFeed y Hamtimer. Desplegar reglas
+// REEMPLAZA las del proyecto completo, así que este archivo contiene las dos:
+//   1. Las reglas de VideoFeed (copiadas tal cual de su repo, rama development).
+//   2. Las reglas de Hamtimer (colecciones con prefijo `hamtimer_`).
+// Desplegar: firebase deploy --only firestore:rules
+//
+// firestore.rules
+//
+// Tarea D-04: Reglas de seguridad endurecidas para Cloud Firestore.
+//
+// Estructura de colecciones y permisos (según README.md):
+//   users/{uid}                 - Perfil del usuario (solo el propio usuario escribe).
+//   videos/{videoId}            - Metadatos del video (solo el autor crea/elimina;
+//                                 actualizaciones restringidas a likes o edición de título).
+//   videos/{videoId}/likes/{uid}- Registro único de like por usuario.
+//
+// Se publican en la consola: Firebase Console → Firestore Database → Reglas.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Funciones auxiliares de autenticación y validación ---
+
+    function estaAutenticado() {
+      return request.auth != null;
+    }
+
+    function esDuenio(uid) {
+      return estaAutenticado() && request.auth.uid == uid;
+    }
+
+    // --- Colección: users/{uid} ---
+    match /users/{uid} {
+      allow read: if estaAutenticado();
+
+      allow create: if esDuenio(uid)
+        && request.resource.data.keys().hasAll(['email', 'nombre', 'creadoEn'])
+        && request.resource.data.email is string
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.nombre.size() <= 100;
+
+      allow update: if esDuenio(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nombre'])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.nombre.size() <= 100;
+
+      allow delete: if false; // La eliminación de cuentas no se realiza directamente
+    }
+
+    // --- Colección: videos/{videoId} ---
+    match /videos/{videoId} {
+      allow read: if estaAutenticado();
+
+      // Creación: debe ser el autor, con todos los campos válidos y likes en 0
+      allow create: if estaAutenticado()
+        && request.resource.data.autorUid == request.auth.uid
+        && request.resource.data.keys().hasAll([
+          'autorUid', 'autorNombre', 'titulo', 'videoUrl', 'storagePath', 'likes', 'creadoEn'
+        ])
+        && request.resource.data.autorNombre is string
+        && request.resource.data.autorNombre.size() > 0
+        && request.resource.data.autorNombre.size() <= 100
+        && request.resource.data.titulo is string
+        && request.resource.data.titulo.size() > 0
+        && request.resource.data.titulo.size() <= 200
+        && request.resource.data.videoUrl is string
+        && request.resource.data.videoUrl.size() > 0
+        && request.resource.data.storagePath is string
+        && request.resource.data.storagePath.matches('^videos/' + request.auth.uid + '/.*')
+        && request.resource.data.likes == 0;
+
+      // Actualización: restringida estrictamente a dos escenarios:
+      // 1. Contador de likes: cualquier usuario autenticado puede alterar ÚNICAMENTE 'likes' en +/- 1.
+      // 2. Edición del autor: el creador original puede modificar ÚNICAMENTE el 'titulo'.
+      allow update: if estaAutenticado() && (
+        // Caso A: Reacción de like (transacción atómica)
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+          && request.resource.data.likes is int
+          && (
+            request.resource.data.likes == resource.data.likes + 1 ||
+            request.resource.data.likes == resource.data.likes - 1
+          )
+          && request.resource.data.likes >= 0
+        )
+        ||
+        // Caso B: El autor edita el título
+        (
+          resource.data.autorUid == request.auth.uid
+          && request.resource.data.autorUid == resource.data.autorUid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['titulo'])
+          && request.resource.data.titulo is string
+          && request.resource.data.titulo.size() > 0
+          && request.resource.data.titulo.size() <= 200
+        )
+      );
+
+      // Eliminación: únicamente el autor puede borrar su propio video
+      allow delete: if estaAutenticado()
+        && resource.data.autorUid == request.auth.uid;
+
+      // --- Subcolección: videos/{videoId}/likes/{uid} ---
+      match /likes/{uid} {
+        allow read: if estaAutenticado();
+
+        // Solo el usuario propietario del UID puede dar su like
+        allow create: if esDuenio(uid)
+          && request.resource.data.keys().hasOnly(['creadoEn']);
+
+        allow update: if false; // Los likes son atómicos: existen o se eliminan
+
+        // Solo el usuario propietario del UID puede remover su like
+        allow delete: if esDuenio(uid);
+      }
+    }
+
+    // =====================================================================
+    // Hamtimer
+    // =====================================================================
+
+    // Monedero: hamtimer_users/{uid} = { points, ownedFilters, claimedCampaigns, lastSeenAt }
+    // Solo el dueño lo lee y lo escribe. Las escrituras no usan transacciones
+    // para funcionar sin conexión, por eso aquí se valida que el saldo nunca
+    // quede negativo cuando el cambio llega al servidor.
+    // Costo asumido: un usuario con conocimientos podría sumarse puntos desde
+    // el cliente; para evitarlo haría falta Cloud Functions (fuera de alcance).
+    match /hamtimer_users/{uid} {
+      allow read: if esDuenio(uid);
+      allow create, update: if esDuenio(uid)
+        && request.resource.data.keys().hasOnly(['points', 'ownedFilters', 'claimedCampaigns', 'lastSeenAt'])
+        && request.resource.data.points is int
+        && request.resource.data.points >= 0
+        && request.resource.data.ownedFilters is list
+        && request.resource.data.claimedCampaigns is list;
+      allow delete: if false;
+    }
+
+    // Campañas de puntos (se crean a mano en la consola y se anuncian por FCM).
+    match /hamtimer_campaigns/{campaignId} {
+      allow read: if estaAutenticado();
+      allow write: if false;
+    }
+
+    // Feed: hamtimer_posts/{postId}
+    match /hamtimer_posts/{postId} {
+      allow read: if estaAutenticado();
+
+      allow create: if estaAutenticado()
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.keys().hasAll([
+          'authorUid', 'authorName', 'imageUrl', 'storagePath', 'filterId', 'likedBy', 'createdAt'
+        ])
+        && request.resource.data.authorName is string
+        && request.resource.data.authorName.size() <= 100
+        && request.resource.data.likedBy.size() == 0
+        && request.resource.data.storagePath.matches('^hamtimer/posts/' + request.auth.uid + '/.*');
+
+      // Like: solo cambia likedBy, y cada quien solo agrega o quita su propio uid.
+      allow update: if estaAutenticado()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likedBy'])
+        && request.resource.data.likedBy.toSet().difference(resource.data.likedBy.toSet())
+             .hasOnly([request.auth.uid])
+        && resource.data.likedBy.toSet().difference(request.resource.data.likedBy.toSet())
+             .hasOnly([request.auth.uid]);
+
+      allow delete: if estaAutenticado() && resource.data.authorUid == request.auth.uid;
+    }
+  }
+}
