@@ -1,8 +1,1 @@
-{
-  "firestore": {
-    "rules": "firestore.rules"
-  },
-  "storage": {
-    "rules": "storage.rules"
-  }
-}
+{"firestore":{"rules":"firestore.rules"},"storage":{"rules":"storage.rules"},"flutter":{"platforms":{"android":{"default":{"projectId":"videofeed-grupo","appId":"1:357266590424:android:77c4e916b4f9676989e5ad","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"videofeed-grupo","configurations":{"android":"1:357266590424:android:77c4e916b4f9676989e5ad"}}}}}}

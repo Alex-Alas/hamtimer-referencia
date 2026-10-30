@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "357266590424",
+    "project_id": "videofeed-grupo",
+    "storage_bucket": "videofeed-grupo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357266590424:android:9da752d936cb4cfc89e5ad",
+        "android_client_info": {
+          "package_name": "com.grupo.videofeed"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxqQ6xq8htfix2X603E9AOgHnX7dw9aFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357266590424:android:77c4e916b4f9676989e5ad",
+        "android_client_info": {
+          "package_name": "sv.esen.hamtimer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxqQ6xq8htfix2X603E9AOgHnX7dw9aFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
