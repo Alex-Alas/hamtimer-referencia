@@ -1,0 +1,5 @@
+{
+  "API_BASE_URL": "https://6acd58b8b406cb8ec0c70e50.mockapi.io",
+  "FAST_POMODORO": true,
+  "GEMINI_MODEL": "gemini-3.5-flash-lite"
+}
