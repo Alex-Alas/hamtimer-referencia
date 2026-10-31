@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hamtimer/models/duration_estimate.dart';
 import 'package:hamtimer/models/task_category.dart';
@@ -24,5 +25,53 @@ void main() {
     // Fuera de rango se recorta; texto que no es JSON se descarta.
     expect(GeminiDurationEstimator.parseResponse('{"pomodoros": 40}')?.pomodoros, 12);
     expect(GeminiDurationEstimator.parseResponse('cuatro pomodoros'), isNull);
+  });
+
+  test('llama a generateContent con la clave y, sin clave, usa el historial', () async {
+    RequestOptions? sent;
+    final dio = Dio()
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            sent = options;
+            handler.resolve(
+              Response(
+                requestOptions: options,
+                data: {
+                  'candidates': [
+                    {
+                      'content': {
+                        'parts': [
+                          {'text': '{"pomodoros": 3, "reason": "Parecida al Lab 1"}'},
+                        ],
+                      },
+                    },
+                  ],
+                },
+              ),
+            );
+          },
+        ),
+      );
+    final history = [buildTask(title: 'Lab 1', completed: 3, isCompleted: true)];
+
+    final estimate = await GeminiDurationEstimator(dio: dio, apiKey: 'clave-de-prueba').estimate(
+      title: 'Lab 2',
+      category: TaskCategory.study,
+      history: history,
+    );
+    expect(estimate.pomodoros, 3);
+    expect(estimate.source, EstimateSource.ai);
+    expect(sent?.path, endsWith(':generateContent'));
+    expect(sent?.headers['x-goog-api-key'], 'clave-de-prueba');
+
+    sent = null;
+    final offline = await GeminiDurationEstimator(dio: dio, apiKey: '').estimate(
+      title: 'Lab 2',
+      category: TaskCategory.study,
+      history: history,
+    );
+    expect(sent, isNull);
+    expect(offline.source, EstimateSource.history);
   });
 }

@@ -51,3 +51,6 @@ app.*.map.json
 .firebase/
 firebase-debug.log
 firestore-debug.log
+
+# Claves locales (Gemini): cada quien crea la suya, nunca se sube
+env/local.json

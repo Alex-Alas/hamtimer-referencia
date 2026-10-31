@@ -30,7 +30,6 @@ dependencies:
   firebase_storage: ^14.0.1
   firebase_analytics: ^13.0.1
   firebase_messaging: ^17.0.1
-  firebase_ai: ^5.1.0
 
   # Cámara en vivo y ML Kit (clases 24 y 29)
   camera: ^0.12.2

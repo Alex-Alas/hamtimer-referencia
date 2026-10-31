@@ -38,19 +38,20 @@ Registro → inicio de sesión → **Nueva tarea** (la IA estima los Pomodoros) 
 
 ```sh
 flutter pub get
-flutter run --dart-define-from-file=env/dev.json
+cp env/local.example.json env/local.json   # y pega tu clave de Gemini
+flutter run --dart-define-from-file=env/dev.json --dart-define-from-file=env/local.json
 ```
 
 Para presentar, el modo demo hace que los bloques duren segundos:
 
 ```sh
-flutter run --dart-define-from-file=env/demo.json
+flutter run --dart-define-from-file=env/demo.json --dart-define-from-file=env/local.json
 ```
 
 APK release:
 
 ```sh
-flutter build apk --release --dart-define-from-file=env/dev.json
+flutter build apk --release --dart-define-from-file=env/dev.json --dart-define-from-file=env/local.json
 # build/app/outputs/flutter-apk/app-release.apk
 ```
 
@@ -60,10 +61,13 @@ flutter build apk --release --dart-define-from-file=env/dev.json
 |---|---|
 | `API_BASE_URL` | URL de MockAPI (el recurso `/tasks` se agrega en el código) |
 | `FAST_POMODORO` | `true` = modo demo (10 s de enfoque) |
-| `GEMINI_MODEL` | Modelo de Gemini para estimar la duración |
+| `GEMINI_MODEL` | Modelo de Gemini para estimar la duración (`gemini-3.5-flash-lite`, nivel gratis) |
+| `GEMINI_API_KEY` | Solo en `env/local.json` (no se sube): clave de [Google AI Studio](https://aistudio.google.com/apikey) |
 
-Gemini se llama con **Firebase AI Logic**: no hay clave de API dentro de la
-app, Firebase autoriza la llamada. `lib/firebase_options.dart` y
+Gemini se llama directo a la Gemini API (`generateContent`) con la clave de AI
+Studio. Sin clave, o sin red, el formulario usa el promedio del historial.
+La clave queda dentro del APK: sirve para la clase, no para publicar en la
+tienda (ahí iría un backend o Firebase AI Logic). `lib/firebase_options.dart` y
 `android/app/google-services.json` los genera FlutterFire; identifican el
 proyecto, no dan acceso (el acceso lo controlan las reglas).
 

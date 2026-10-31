@@ -18,11 +18,15 @@ abstract final class Env {
   /// para poder mostrar el ciclo completo en la presentación.
   static const bool fastPomodoro = bool.fromEnvironment('FAST_POMODORO');
 
-  /// Modelo de Gemini que usa el estimador de duración (Firebase AI Logic).
+  /// Modelo de Gemini que usa el estimador de duración.
   static const String geminiModel = String.fromEnvironment(
     'GEMINI_MODEL',
     defaultValue: 'gemini-3.5-flash-lite',
   );
+
+  /// Clave de la Gemini API (Google AI Studio). Va en `env/local.json`, que
+  /// no se sube al repo. Vacía = el estimador usa solo el historial.
+  static const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
 
   /// Tamaño de página para el scroll infinito del dashboard.
   static const int pageSize = 10;

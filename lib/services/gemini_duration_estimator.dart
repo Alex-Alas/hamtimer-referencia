@@ -1,7 +1,6 @@
-import 'dart:async';
 import 'dart:convert';
 
-import 'package:firebase_ai/firebase_ai.dart';
+import 'package:dio/dio.dart';
 
 import '../core/config/env.dart';
 import '../core/logging/app_logger.dart';
@@ -10,38 +9,38 @@ import '../models/task.dart';
 import '../models/task_category.dart';
 import 'duration_estimator.dart';
 
-/// Estima la duración de una tarea con Gemini, por Firebase AI Logic.
+/// Estima la duración de una tarea con Gemini, llamando directo a la
+/// Gemini API (`generateContent`) con una clave de Google AI Studio.
 ///
-/// - No hay clave de API dentro de la app: Firebase autoriza la llamada.
+/// - La clave llega por `GEMINI_API_KEY` en `env/local.json`, que no se sube
+///   al repo. Sin clave no se llama a Gemini y se usa [_fallback].
 /// - La respuesta se pide en JSON con un esquema fijo (`pomodoros`, `reason`)
 ///   para no tener que interpretar texto libre.
 /// - Si algo falla (sin red, cuota, respuesta rara) se usa [_fallback].
 class GeminiDurationEstimator implements DurationEstimator {
   GeminiDurationEstimator({
-    GenerativeModel? model,
+    Dio? dio,
+    this._apiKey = Env.geminiApiKey,
+    this._model = Env.geminiModel,
     this._fallback = const HistoryAverageEstimator(),
-  }) : _model = model ?? _createModel();
+  }) : _dio = dio ?? Dio(_baseOptions);
 
-  final GenerativeModel _model;
+  final Dio _dio;
+  final String _apiKey;
+  final String _model;
   final DurationEstimator _fallback;
 
-  static GenerativeModel _createModel() => FirebaseAI.googleAI().generativeModel(
-    model: Env.geminiModel,
-    systemInstruction: Content.system(
+  // Sin red la llamada puede tardar mucho en fallar: se corta a los 10 s.
+  static final _baseOptions = BaseOptions(
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta/',
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 10),
+  );
+
+  static const _systemInstruction =
       'Eres el asistente de Hamtimer, una app Pomodoro para estudiantes. '
       'Estimas cuántos bloques Pomodoro de 25 minutos necesita una tarea. '
-      'Respondes solo con el JSON pedido.',
-    ),
-    generationConfig: GenerationConfig(
-      responseMimeType: 'application/json',
-      responseSchema: Schema.object(
-        properties: {
-          'pomodoros': Schema.integer(description: 'Bloques de 25 min, entre 1 y 12'),
-          'reason': Schema.string(description: 'Razón breve en español, máximo 15 palabras'),
-        },
-      ),
-    ),
-  );
+      'Respondes solo con el JSON pedido.';
 
   @override
   Future<DurationEstimate> estimate({
@@ -49,19 +48,67 @@ class GeminiDurationEstimator implements DurationEstimator {
     required TaskCategory category,
     required List<Task> history,
   }) async {
+    if (_apiKey.isEmpty) {
+      AppLogger.warning('gemini', 'Falta GEMINI_API_KEY, se usa el historial');
+      return _fallback.estimate(title: title, category: category, history: history);
+    }
     try {
       final prompt = buildPrompt(title: title, category: category, history: history);
-      // Sin red la llamada puede tardar mucho en fallar: se corta a los 10 s.
-      final response = await _model
-          .generateContent([Content.text(prompt)])
-          .timeout(const Duration(seconds: 10));
-      final estimate = parseResponse(response.text);
+      final response = await _dio.post<Map<String, dynamic>>(
+        'models/$_model:generateContent',
+        options: Options(headers: {'x-goog-api-key': _apiKey}),
+        data: buildRequest(prompt),
+      );
+      final text = extractText(response.data);
+      final estimate = parseResponse(text);
       if (estimate != null) return estimate;
-      AppLogger.warning('gemini', 'Respuesta no válida: ${response.text}');
+      AppLogger.warning('gemini', 'Respuesta no válida: $text');
+    } on DioException catch (error, stack) {
+      // El cuerpo del error trae la causa (cuota, modelo, clave inválida).
+      AppLogger.error('gemini', 'Falló la estimación: ${error.response?.data}', error, stack);
     } on Exception catch (error, stack) {
       AppLogger.error('gemini', 'Falló la estimación, se usa el historial', error, stack);
     }
     return _fallback.estimate(title: title, category: category, history: history);
+  }
+
+  /// Cuerpo de `generateContent`: instrucción de sistema, el prompt y el
+  /// esquema JSON de la respuesta.
+  static Map<String, dynamic> buildRequest(String prompt) => {
+    'systemInstruction': {
+      'parts': [
+        {'text': _systemInstruction},
+      ],
+    },
+    'contents': [
+      {
+        'role': 'user',
+        'parts': [
+          {'text': prompt},
+        ],
+      },
+    ],
+    'generationConfig': {
+      'temperature': 0.2,
+      'responseMimeType': 'application/json',
+      'responseSchema': {
+        'type': 'OBJECT',
+        'properties': {
+          'pomodoros': {'type': 'INTEGER', 'description': 'Bloques de 25 min, entre 1 y 12'},
+          'reason': {'type': 'STRING', 'description': 'Razón breve en español, máximo 15 palabras'},
+        },
+        'required': ['pomodoros', 'reason'],
+      },
+    },
+  };
+
+  /// Saca el texto de la primera respuesta (`candidates[0].content.parts`).
+  static String? extractText(Map<String, dynamic>? body) {
+    final candidates = body?['candidates'];
+    if (candidates is! List || candidates.isEmpty) return null;
+    final parts = (candidates.first as Map<String, dynamic>)['content']?['parts'];
+    if (parts is! List) return null;
+    return parts.map((part) => (part as Map<String, dynamic>)['text'] ?? '').join();
   }
 
   /// Arma el mensaje con la tarea nueva y el historial real del usuario.
