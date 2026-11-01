@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/face_filter.dart';
+import '../common/edge_fade.dart';
 import 'filter_card.dart';
 
 /// Tienda de filtros: fila desplazable con todo el catálogo. Los filtros
@@ -28,25 +29,27 @@ class FilterStore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        clipBehavior: Clip.none,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        itemCount: filters.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 12),
-        itemBuilder: (context, index) {
-          final filter = filters[index];
-          final owned = isOwned(filter);
-          return FilterCard(
-            filter: filter,
-            isOwned: owned,
-            isSelected: filter.id == selectedId,
-            canAfford: points >= filter.price,
-            onTap: () => owned ? onSelect(filter) : onBuy(filter),
-          );
-        },
+    return EdgeFade(
+      child: SizedBox(
+        height: 120,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          itemCount: filters.length,
+          separatorBuilder: (_, _) => const SizedBox(width: 12),
+          itemBuilder: (context, index) {
+            final filter = filters[index];
+            final owned = isOwned(filter);
+            return FilterCard(
+              filter: filter,
+              isOwned: owned,
+              isSelected: filter.id == selectedId,
+              canAfford: points >= filter.price,
+              onTap: () => owned ? onSelect(filter) : onBuy(filter),
+            );
+          },
+        ),
       ),
     );
   }

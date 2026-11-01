@@ -47,5 +47,17 @@ void main() {
     );
     expect(page.fromCache, isTrue);
     expect(page.tasks, hasLength(1));
+
+    // Borrar sin red: desaparece de la lista y el DELETE queda en la cola.
+    final syncedId = page.tasks.single.id;
+    await repository.delete('uid-1', syncedId);
+    expect((await repository.fetchAll('uid-1')).tasks, isEmpty);
+    expect(remote.tasks, hasLength(1));
+
+    // Con red se envía el DELETE y la tarea ya no existe en ningún lado.
+    remote.offline = false;
+    expect((await repository.fetchAll('uid-1')).tasks, isEmpty);
+    expect(remote.tasks, isEmpty);
+    expect(await local.getPending('uid-1'), isEmpty);
   });
 }

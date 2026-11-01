@@ -22,4 +22,7 @@ abstract interface class TaskRemoteDataSource {
 
   /// PUT: reemplaza una tarea existente y devuelve la versión guardada.
   Future<Task> update(String userId, Task task);
+
+  /// DELETE: borra la tarea. Si ya no existe se considera borrada.
+  Future<void> delete(String userId, String taskId);
 }

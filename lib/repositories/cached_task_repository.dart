@@ -12,7 +12,7 @@ import 'task_repository.dart';
 ///   MockAPI. Si responde, guarda la copia en SQLite y la devuelve. Si no hay
 ///   red, devuelve lo que hay en SQLite marcado con `fromCache: true`.
 /// - **Escritura:** intenta MockAPI. Sin red, guarda el cambio en SQLite como
-///   pendiente (`pending_create` o `pending_update`) y lo devuelve igual, así
+///   pendiente (`pending_create`, `pending_update` o `pending_delete`) y lo devuelve igual, así
 ///   el usuario sigue trabajando. La próxima lectura con red lo sincroniza.
 ///
 /// `TaskProvider` no sabe que existen el caché ni la cola: solo ve
@@ -131,6 +131,23 @@ class CachedTaskRepository implements TaskRepository {
     }
   }
 
+  @override
+  Future<void> delete(String userId, String taskId) async {
+    final id = _syncedIds[taskId] ?? taskId;
+    // Una tarea que nunca llegó a MockAPI solo existe en SQLite.
+    if (isLocalId(id)) {
+      await _local.remove(userId, id);
+      return;
+    }
+    try {
+      await _remote.delete(userId, id);
+      await _local.remove(userId, id);
+    } on NetworkException {
+      await _local.markPendingDelete(userId, id);
+      AppLogger.info(_source, 'Sin red: borrado de $id pendiente');
+    }
+  }
+
   /// Envía la cola a MockAPI, del cambio más viejo al más nuevo.
   ///
   /// Si se cae la red a la mitad, relanza [NetworkException] y lo que falta se
@@ -163,6 +180,9 @@ class CachedTaskRepository implements TaskRepository {
           case SyncStatus.pendingUpdate:
             final saved = await _remote.update(userId, item.task);
             await _local.markSynced(userId, saved.id);
+          case SyncStatus.pendingDelete:
+            await _remote.delete(userId, item.task.id);
+            await _local.remove(userId, item.task.id);
           case SyncStatus.synced:
             break;
         }
@@ -170,7 +190,11 @@ class CachedTaskRepository implements TaskRepository {
         rethrow;
       } on AppException catch (error) {
         AppLogger.warning(_source, 'Se descarta "${item.task.title}": ${error.message}');
-        await _local.markSynced(userId, item.task.id);
+        if (item.status == SyncStatus.pendingDelete) {
+          await _local.remove(userId, item.task.id);
+        } else {
+          await _local.markSynced(userId, item.task.id);
+        }
       }
     }
   }

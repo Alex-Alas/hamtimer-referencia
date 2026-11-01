@@ -55,7 +55,12 @@ class FeedScreen extends StatelessWidget {
     }
     if (feed.isLoading) return const Center(child: CircularProgressIndicator());
     if (feed.errorMessage != null) {
-      return MessageState(icon: Icons.cloud_off_outlined, message: feed.errorMessage!);
+      return MessageState(
+        icon: Icons.cloud_off_outlined,
+        message: feed.errorMessage!,
+        actionLabel: 'Reintentar',
+        onAction: feed.retry,
+      );
     }
     if (feed.posts.isEmpty) {
       return const MessageState(

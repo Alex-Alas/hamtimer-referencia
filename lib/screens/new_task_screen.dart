@@ -48,6 +48,33 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     super.dispose();
   }
 
+  /// Cancelar: si ya hay datos escritos, pide confirmar antes de descartarlos.
+  Future<void> _close() async {
+    if (!_controller.hasChanges) {
+      widget.onClose();
+      return;
+    }
+    FocusScope.of(context).unfocus();
+    final discard = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('¿Descartar la tarea?'),
+        content: const Text('Lo que escribiste se perderá.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Seguir editando'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Descartar'),
+          ),
+        ],
+      ),
+    );
+    if (discard == true && mounted) widget.onClose();
+  }
+
   Future<void> _estimate() async {
     FocusScope.of(context).unfocus();
     final analytics = context.read<AnalyticsService>();
@@ -90,7 +117,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             icon: Icons.close,
             tooltip: 'Cancelar',
             color: AppColors.onSurface,
-            onPressed: widget.onClose,
+            onPressed: _close,
           ),
         ),
         Expanded(

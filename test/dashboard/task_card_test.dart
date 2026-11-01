@@ -9,6 +9,7 @@ void main() {
   testWidgets('la tarjeta muestra la tarea y avisa al tocar el check', (tester) async {
     await initializeDateFormatting('es');
     var toggled = 0;
+    var deleted = 0;
     final task = buildTask(title: 'Leer guía M3', completed: 1, estimated: 3);
 
     await tester.pumpWidget(
@@ -18,6 +19,7 @@ void main() {
             task: task,
             now: DateTime(2026, 11, 2, 9),
             onToggleCompleted: () => toggled++,
+            onDelete: () => deleted++,
           ),
         ),
       ),
@@ -30,5 +32,8 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.check));
     expect(toggled, 1);
+
+    await tester.tap(find.byIcon(Icons.delete_outline));
+    expect(deleted, 1);
   });
 }

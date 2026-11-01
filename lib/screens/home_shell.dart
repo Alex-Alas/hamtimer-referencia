@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../core/logging/app_logger.dart';
@@ -35,6 +36,9 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   HomeTab _tab = HomeTab.dashboard;
+
+  /// Para salir con el botón atrás hay que tocarlo dos veces seguidas.
+  DateTime? _lastBackPress;
 
   /// Cambia cada vez que se abre "Nueva": la `key` nueva obliga a crear un
   /// formulario limpio en lugar de mostrar el que quedó a medias.
@@ -75,6 +79,24 @@ class _HomeShellState extends State<HomeShell> {
       _tab = tab;
     });
     context.read<AnalyticsService>().logScreen(tab.screenName);
+  }
+
+  /// Botón atrás: desde otra pestaña vuelve a Tareas; desde Tareas avisa y
+  /// sale solo si se toca otra vez en los siguientes 2 segundos.
+  void _onBackPressed(bool didPop, Object? result) {
+    if (didPop) return;
+    if (_tab != HomeTab.dashboard) {
+      _selectTab(HomeTab.dashboard);
+      return;
+    }
+    final now = DateTime.now();
+    final last = _lastBackPress;
+    if (last != null && now.difference(last) < const Duration(seconds: 2)) {
+      SystemNavigator.pop();
+      return;
+    }
+    _lastBackPress = now;
+    AppFeedback.show(context, 'Toca otra vez para salir');
   }
 
   void _onTaskCreated(Task task) {
@@ -124,28 +146,32 @@ class _HomeShellState extends State<HomeShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: IndexedStack(
-          index: _tab.index,
-          children: [
-            const DashboardScreen(),
-            const PomodoroScreen(),
-            NewTaskScreen(
-              key: ValueKey(_formSession),
-              onClose: () => _selectTab(HomeTab.dashboard),
-              onCreated: _onTaskCreated,
-            ),
-            CameraScreen(
-              isActive: _tab == HomeTab.camera,
-              onPublished: () => _selectTab(HomeTab.feed),
-            ),
-            const FeedScreen(),
-          ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: _onBackPressed,
+      child: Scaffold(
+        body: SafeArea(
+          bottom: false,
+          child: IndexedStack(
+            index: _tab.index,
+            children: [
+              const DashboardScreen(),
+              const PomodoroScreen(),
+              NewTaskScreen(
+                key: ValueKey(_formSession),
+                onClose: () => _selectTab(HomeTab.dashboard),
+                onCreated: _onTaskCreated,
+              ),
+              CameraScreen(
+                isActive: _tab == HomeTab.camera,
+                onPublished: () => _selectTab(HomeTab.feed),
+              ),
+              const FeedScreen(),
+            ],
+          ),
         ),
+        bottomNavigationBar: HomeBottomNavBar(selected: _tab, onSelected: _selectTab),
       ),
-      bottomNavigationBar: HomeBottomNavBar(selected: _tab, onSelected: _selectTab),
     );
   }
 }

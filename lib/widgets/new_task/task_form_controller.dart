@@ -63,6 +63,9 @@ class TaskFormController extends ChangeNotifier {
   DurationEstimate? get estimate => _estimate;
   String? get estimateError => _estimateError;
 
+  /// `true` si el usuario ya escribió o eligió algo que se perdería al salir.
+  bool get hasChanges => titleController.text.trim().isNotEmpty || _category != null;
+
   /// Tras el primer intento de envío, los errores se muestran en vivo.
   bool get submitAttempted => _submitAttempted;
 

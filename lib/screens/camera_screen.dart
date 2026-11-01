@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +60,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
   bool _isProcessingFrame = false;
   bool _isCapturing = false;
   String? _error;
+  bool _permissionDenied = false;
 
   List<Face> _faces = const [];
   Size? _frameSize;
@@ -137,9 +139,10 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
       });
     } on CameraException catch (error) {
       AppLogger.error('camera', 'No se pudo abrir la cámara', error);
+      _permissionDenied = error.code == 'CameraAccessDenied';
       _setError(
-        error.code == 'CameraAccessDenied'
-            ? 'Hamtimer necesita permiso para usar la cámara'
+        _permissionDenied
+            ? 'Hamtimer necesita permiso para usar la cámara.\nActívalo en los ajustes de la app.'
             : 'No se pudo abrir la cámara',
       );
     } finally {
@@ -325,6 +328,8 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
             setState(() => _error = null);
             _startCamera();
           },
+          secondaryActionLabel: _permissionDenied ? 'Abrir ajustes' : null,
+          onSecondaryAction: openAppSettings,
         ),
       );
     }

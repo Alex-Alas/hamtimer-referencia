@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../common/edge_fade.dart';
 import '../common/neo_button.dart';
 import '../../models/task_filter.dart';
 
@@ -16,33 +17,35 @@ class TaskFilterBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final filters = TaskFilter.options;
 
-    return SizedBox(
-      height: 48,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        // Margen para que las sombras neomórficas no se recorten.
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-        clipBehavior: Clip.none,
-        itemCount: filters.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 10),
-        itemBuilder: (context, index) {
-          final filter = filters[index];
-          final isSelected = filter == selected;
-          return NeoButton(
-            onPressed: () => onSelected(filter),
-            small: true,
-            selected: isSelected,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              filter.label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
+    return EdgeFade(
+      child: SizedBox(
+        height: 60,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          // Margen para que las sombras neomórficas no se recorten.
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+          clipBehavior: Clip.none,
+          itemCount: filters.length,
+          separatorBuilder: (_, _) => const SizedBox(width: 10),
+          itemBuilder: (context, index) {
+            final filter = filters[index];
+            final isSelected = filter == selected;
+            return NeoButton(
+              onPressed: () => onSelected(filter),
+              small: true,
+              selected: isSelected,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(
+                filter.label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: isSelected ? AppColors.primary : AppColors.onSurfaceVariant,
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

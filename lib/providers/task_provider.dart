@@ -197,6 +197,25 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
+  // --- DELETE ----------------------------------------------------------------
+
+  /// Quita la tarea de la lista sin borrarla todavía: da tiempo a "Deshacer".
+  void hideTask(Task task) {
+    _tasks = _tasks.where((t) => t.id != task.id).toList(growable: false);
+    notifyListeners();
+  }
+
+  /// Borra la tarea de verdad (MockAPI y SQLite; sin red queda en la cola).
+  Future<void> deleteTask(Task task) async {
+    final userId = _requireUser();
+    await _repository.delete(userId, task.id);
+    await _loadTodayProgress(userId);
+    notifyListeners();
+  }
+
+  /// "Deshacer": la tarea nunca se borró, solo se ocultó; basta recargar.
+  Future<void> restoreTask() => refresh();
+
   /// Suma un Pomodoro a la tarea y la guarda. Lo usa el temporizador.
   Future<Task> addPomodoro(Task task) async {
     final userId = _requireUser();

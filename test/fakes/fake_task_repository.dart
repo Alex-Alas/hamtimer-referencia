@@ -51,4 +51,8 @@ class FakeTaskRepository implements TaskRepository {
     if (index != -1) tasks[index] = task;
     return task;
   }
+
+  @override
+  Future<void> delete(String userId, String taskId) async =>
+      tasks.removeWhere((t) => t.id == taskId);
 }

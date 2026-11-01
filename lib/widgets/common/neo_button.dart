@@ -4,6 +4,9 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import 'neo_box.dart';
 
+/// Área táctil mínima recomendada por Material y WCAG 2.2 (48 dp).
+const double kMinTouchTarget = 48;
+
 /// Botón táctil neomórfico: en reposo sobresale y, al presionarlo, se "hunde"
 /// (pasa a estilo inset), imitando el `active:neo-inset` del diseño.
 class NeoButton extends StatefulWidget {
@@ -62,19 +65,30 @@ class _NeoButtonState extends State<NeoButton> {
         onTapUp: (_) => _setPressed(false),
         onTapCancel: () => _setPressed(false),
         onTap: widget.onPressed,
-        child: AnimatedScale(
-          scale: _pressed ? 0.97 : 1,
-          duration: const Duration(milliseconds: 120),
-          child: Opacity(
-            opacity: widget.onPressed == null ? 0.5 : 1,
-            child: NeoBox(
-              style: style,
-              radius: widget.radius,
-              circle: widget.circle,
-              padding: widget.padding,
-              width: widget.width,
-              height: widget.height,
-              child: Center(widthFactor: 1, heightFactor: 1, child: widget.child),
+        // El dibujo conserva su tamaño; solo crece el área que responde al toque.
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: kMinTouchTarget,
+            minHeight: kMinTouchTarget,
+          ),
+          child: Center(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: AnimatedScale(
+              scale: _pressed ? 0.97 : 1,
+              duration: const Duration(milliseconds: 120),
+              child: Opacity(
+                opacity: widget.onPressed == null ? 0.5 : 1,
+                child: NeoBox(
+                  style: style,
+                  radius: widget.radius,
+                  circle: widget.circle,
+                  padding: widget.padding,
+                  width: widget.width,
+                  height: widget.height,
+                  child: Center(widthFactor: 1, heightFactor: 1, child: widget.child),
+                ),
+              ),
             ),
           ),
         ),

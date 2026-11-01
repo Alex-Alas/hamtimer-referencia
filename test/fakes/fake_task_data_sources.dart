@@ -59,6 +59,12 @@ class FakeTaskRemoteDataSource implements TaskRemoteDataSource {
     tasks[task.id] = task;
     return task;
   }
+
+  @override
+  Future<void> delete(String userId, String taskId) async {
+    _checkNetwork();
+    tasks.remove(taskId);
+  }
 }
 
 /// SQLite de mentira: un mapa en memoria con el estado de sincronización.
@@ -81,7 +87,8 @@ class InMemoryTaskLocalDataSource implements TaskLocalDataSource {
   }
 
   @override
-  Future<List<Task>> getAll(String userId) async => rows.values.map((r) => r.task).toList();
+  Future<List<Task>> getAll(String userId) async =>
+      rows.values.where((r) => r.status != SyncStatus.pendingDelete).map((r) => r.task).toList();
 
   @override
   Future<List<Task>> getCompleted(String userId, {required int limit}) async =>
@@ -106,4 +113,13 @@ class InMemoryTaskLocalDataSource implements TaskLocalDataSource {
     final row = rows[taskId];
     if (row != null) rows[taskId] = PendingTask(row.task, SyncStatus.synced);
   }
+
+  @override
+  Future<void> markPendingDelete(String userId, String taskId) async {
+    final row = rows[taskId];
+    if (row != null) rows[taskId] = PendingTask(row.task, SyncStatus.pendingDelete);
+  }
+
+  @override
+  Future<void> remove(String userId, String taskId) async => rows.remove(taskId);
 }

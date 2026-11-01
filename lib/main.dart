@@ -27,6 +27,7 @@ import 'services/analytics_service.dart';
 import 'services/connectivity_service.dart';
 import 'services/duration_estimator.dart';
 import 'services/gemini_duration_estimator.dart';
+import 'services/pomodoro_alarm.dart';
 import 'services/push_notification_service.dart';
 
 /// Recibe los mensajes de FCM con la app cerrada o en segundo plano. Debe ser
@@ -92,6 +93,7 @@ Future<void> main() async {
             ),
             settingsRepository: PrefsPomodoroSettingsRepository(),
             demoMode: Env.fastPomodoro,
+            alarm: LocalNotificationPomodoroAlarm(),
           )..loadSettings(),
         ),
       ],

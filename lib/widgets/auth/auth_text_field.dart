@@ -6,7 +6,7 @@ import '../common/neo_box.dart';
 
 /// Campo de texto de los formularios de acceso: un `TextFormField` dentro de
 /// una cavidad neomórfica, con el error dibujado debajo.
-class AuthTextField extends StatelessWidget {
+class AuthTextField extends StatefulWidget {
   const AuthTextField({
     super.key,
     required this.controller,
@@ -31,9 +31,16 @@ class AuthTextField extends StatelessWidget {
   final Iterable<String>? autofillHints;
 
   @override
+  State<AuthTextField> createState() => _AuthTextFieldState();
+}
+
+class _AuthTextFieldState extends State<AuthTextField> {
+  late bool _hidden = widget.obscureText;
+
+  @override
   Widget build(BuildContext context) {
     return FormField<String>(
-      validator: (_) => validator(controller.text),
+      validator: (_) => widget.validator(widget.controller.text),
       builder: (field) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,24 +49,34 @@ class AuthTextField extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: AppColors.primary),
+                Icon(widget.icon, size: 20, color: AppColors.primary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
-                    controller: controller,
-                    obscureText: obscureText,
-                    keyboardType: keyboardType,
-                    textInputAction: textInputAction,
-                    autofillHints: autofillHints,
+                    controller: widget.controller,
+                    obscureText: _hidden,
+                    keyboardType: widget.keyboardType,
+                    textInputAction: widget.textInputAction,
+                    autofillHints: widget.autofillHints,
                     onChanged: field.didChange,
-                    onSubmitted: onSubmitted,
+                    onSubmitted: widget.onSubmitted,
                     decoration: InputDecoration(
-                      labelText: label,
+                      labelText: widget.label,
                       border: InputBorder.none,
                       filled: false,
                     ),
                   ),
                 ),
+                if (widget.obscureText)
+                  IconButton(
+                    onPressed: () => setState(() => _hidden = !_hidden),
+                    tooltip: _hidden ? 'Mostrar contraseña' : 'Ocultar contraseña',
+                    icon: Icon(
+                      _hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      size: 20,
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
               ],
             ),
           ),

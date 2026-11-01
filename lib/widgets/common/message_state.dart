@@ -11,12 +11,16 @@ class MessageState extends StatelessWidget {
     required this.message,
     this.actionLabel,
     this.onAction,
+    this.secondaryActionLabel,
+    this.onSecondaryAction,
   });
 
   final IconData icon;
   final String message;
   final String? actionLabel;
   final VoidCallback? onAction;
+  final String? secondaryActionLabel;
+  final VoidCallback? onSecondaryAction;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,10 @@ class MessageState extends StatelessWidget {
                 style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
               ),
             ),
+          ],
+          if (secondaryActionLabel != null) ...[
+            const SizedBox(height: 12),
+            TextButton(onPressed: onSecondaryAction, child: Text(secondaryActionLabel!)),
           ],
         ],
       ),

@@ -9,7 +9,10 @@ enum SyncStatus {
   pendingCreate('pending_create'),
 
   /// Modificada sin conexión: falta enviar el PUT.
-  pendingUpdate('pending_update');
+  pendingUpdate('pending_update'),
+
+  /// Borrada sin conexión: ya no se muestra, falta enviar el DELETE.
+  pendingDelete('pending_delete');
 
   const SyncStatus(this.dbValue);
 
@@ -36,8 +39,8 @@ abstract interface class TaskLocalDataSource {
   /// cambios son más nuevos que lo que acaba de llegar del servidor.
   Future<void> upsertAll(String userId, List<Task> tasks, {SyncStatus status = SyncStatus.synced});
 
-  /// Todas las tareas guardadas del usuario (pendientes incluidas), ordenadas
-  /// por vencimiento.
+  /// Todas las tareas guardadas del usuario (pendientes incluidas, borradas
+  /// no), ordenadas por vencimiento.
   Future<List<Task>> getAll(String userId);
 
   /// Las últimas [limit] completadas, de la más reciente a la más antigua.
@@ -52,4 +55,11 @@ abstract interface class TaskLocalDataSource {
 
   /// Saca una tarea de la cola sin enviarla (el servidor la rechazó).
   Future<void> markSynced(String userId, String taskId);
+
+  /// Marca la tarea como borrada sin conexión: deja de listarse y el DELETE
+  /// queda en la cola.
+  Future<void> markPendingDelete(String userId, String taskId);
+
+  /// Quita la tarea de SQLite.
+  Future<void> remove(String userId, String taskId);
 }

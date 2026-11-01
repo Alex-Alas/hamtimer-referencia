@@ -17,11 +17,13 @@ class TaskCard extends StatelessWidget {
     required this.task,
     required this.now,
     required this.onToggleCompleted,
+    required this.onDelete,
   });
 
   final Task task;
   final DateTime now;
   final VoidCallback onToggleCompleted;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +58,7 @@ class TaskCard extends StatelessWidget {
               children: [
                 Text(
                   task.title,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
@@ -89,6 +91,11 @@ class TaskCard extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           PomodoroDots(completed: task.completedPomodoros, estimated: task.estimatedPomodoros),
+          IconButton(
+            onPressed: onDelete,
+            tooltip: 'Borrar "${task.title}"',
+            icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.onSurfaceVariant),
+          ),
         ],
       ),
     );

@@ -20,4 +20,7 @@ abstract interface class TaskRepository {
   Future<Task> create(String userId, TaskDraft draft);
 
   Future<Task> update(String userId, Task task);
+
+  /// Borra la tarea. Sin red queda pendiente y se envía al volver la conexión.
+  Future<void> delete(String userId, String taskId);
 }

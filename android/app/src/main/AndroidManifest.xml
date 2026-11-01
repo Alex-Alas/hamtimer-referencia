@@ -8,6 +8,10 @@
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <!-- Notificaciones de FCM (Android 13 o más pide permiso). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- Aviso al terminar cada bloque del Pomodoro, aunque la app esté cerrada. -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32"/>
 
     <application
         android:label="Hamtimer"
@@ -35,6 +39,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

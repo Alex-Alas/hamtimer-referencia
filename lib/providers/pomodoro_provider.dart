@@ -6,6 +6,7 @@ import '../core/errors/app_exception.dart';
 import '../models/pomodoro_settings.dart';
 import '../models/task.dart';
 import '../repositories/pomodoro_settings_repository.dart';
+import '../services/pomodoro_alarm.dart';
 import 'pomodoro_progress_recorder.dart';
 
 /// Motor del temporizador Pomodoro y de la cola de tareas de la sesión.
@@ -25,6 +26,7 @@ class PomodoroProvider extends ChangeNotifier {
     required this._recorder,
     required this._settingsRepository,
     this.demoMode = false,
+    this._alarm = const NoPomodoroAlarm(),
     DateTime Function()? clock,
   }) : _clock = clock ?? DateTime.now {
     _settings = demoMode ? PomodoroSettings.demo : PomodoroSettings.standard;
@@ -37,6 +39,7 @@ class PomodoroProvider extends ChangeNotifier {
 
   /// En modo demo los bloques duran segundos y no se leen las preferencias.
   final bool demoMode;
+  final PomodoroAlarm _alarm;
   final DateTime Function() _clock;
   final StreamController<PomodoroEvent> _events = StreamController.broadcast();
 
@@ -104,6 +107,16 @@ class PomodoroProvider extends ChangeNotifier {
     // se desfasa aunque el sistema retrase algún tick.
     _endsAt = _clock().add(_remaining);
     _ticker = Timer.periodic(const Duration(milliseconds: 250), (_) => tick());
+    // Si la app queda en segundo plano, el sistema avisa a la hora exacta.
+    unawaited(
+      _alarm.schedule(
+        at: _endsAt!,
+        title: _phase.isBreak ? 'Descanso terminado' : '¡Bloque de enfoque terminado!',
+        body: _phase.isBreak
+            ? 'Vuelve a tu tarea cuando estés listo.'
+            : 'Abre Hamtimer para tomar tu descanso.',
+      ),
+    );
     notifyListeners();
   }
 
@@ -270,6 +283,7 @@ class PomodoroProvider extends ChangeNotifier {
   }
 
   void _stopTicker() {
+    if (_ticker != null) unawaited(_alarm.cancel());
     _ticker?.cancel();
     _ticker = null;
     _endsAt = null;

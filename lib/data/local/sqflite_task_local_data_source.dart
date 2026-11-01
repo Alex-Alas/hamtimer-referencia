@@ -82,8 +82,8 @@ class SqfliteTaskLocalDataSource implements TaskLocalDataSource {
     final db = await _database;
     final rows = await db.query(
       _table,
-      where: 'user_id = ?',
-      whereArgs: [userId],
+      where: 'user_id = ? AND sync_status != ?',
+      whereArgs: [userId, SyncStatus.pendingDelete.dbValue],
       orderBy: 'due_at ASC',
     );
     return rows.map(_fromRow).toList(growable: false);
@@ -94,8 +94,8 @@ class SqfliteTaskLocalDataSource implements TaskLocalDataSource {
     final db = await _database;
     final rows = await db.query(
       _table,
-      where: 'user_id = ? AND is_completed = 1',
-      whereArgs: [userId],
+      where: 'user_id = ? AND is_completed = 1 AND sync_status != ?',
+      whereArgs: [userId, SyncStatus.pendingDelete.dbValue],
       orderBy: 'created_at DESC',
       limit: limit,
     );
@@ -136,6 +136,23 @@ class SqfliteTaskLocalDataSource implements TaskLocalDataSource {
       where: 'id = ? AND user_id = ?',
       whereArgs: [taskId, userId],
     );
+  }
+
+  @override
+  Future<void> markPendingDelete(String userId, String taskId) async {
+    final db = await _database;
+    await db.update(
+      _table,
+      {'sync_status': SyncStatus.pendingDelete.dbValue},
+      where: 'id = ? AND user_id = ?',
+      whereArgs: [taskId, userId],
+    );
+  }
+
+  @override
+  Future<void> remove(String userId, String taskId) async {
+    final db = await _database;
+    await db.delete(_table, where: 'id = ? AND user_id = ?', whereArgs: [taskId, userId]);
   }
 
   Future<List<Map<String, Object?>>> _pendingRows(DatabaseExecutor db, String userId) => db.query(

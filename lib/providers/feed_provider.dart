@@ -39,6 +39,19 @@ class FeedProvider extends ChangeNotifier {
     _subscription = null;
     _posts = const [];
     if (user == null) return;
+    _listen();
+  }
+
+  /// Vuelve a escuchar el feed tras un error (botón "Reintentar").
+  void retry() {
+    if (_user == null) return;
+    _subscription?.cancel();
+    _errorMessage = null;
+    _listen();
+    notifyListeners();
+  }
+
+  void _listen() {
     _isLoading = true;
     _subscription = _repository.watchLatest().listen(
       (posts) {

@@ -63,6 +63,11 @@ class MockApiTaskRemoteDataSource implements TaskRemoteDataSource {
     return TaskJsonMapper.fromJson(_asObject(data));
   }
 
+  @override
+  Future<void> delete(String userId, String taskId) async {
+    await _send(() => _dio.delete<Object?>('$_path/$taskId'), emptyOnNotFound: true);
+  }
+
   Future<List<Task>> _getList(Map<String, Object?> query) async {
     final data = await _send(
       () => _dio.get<Object?>(_path, queryParameters: query),

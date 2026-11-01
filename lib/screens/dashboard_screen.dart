@@ -63,12 +63,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _toggleCompleted(Task task) async {
     final analytics = context.read<AnalyticsService>();
+    final tasks = context.read<TaskProvider>();
     try {
-      await context.read<TaskProvider>().toggleCompleted(task);
+      await tasks.toggleCompleted(task);
       await analytics.logEvent('task_toggled', {'completed': (!task.isCompleted).toString()});
+      if (!mounted) return;
+      AppFeedback.showUndo(
+        context,
+        task.isCompleted ? 'Tarea marcada como pendiente' : 'Tarea completada',
+        // Se vuelve a invertir la tarea ya cambiada.
+        onUndo: () => tasks.toggleCompleted(task.copyWith(isCompleted: !task.isCompleted)),
+      );
     } on AppException catch (error) {
       if (mounted) AppFeedback.show(context, error.message);
     }
+  }
+
+  /// La tarea sale de la lista al instante, pero solo se borra de verdad si
+  /// pasan 5 segundos sin tocar "Deshacer".
+  void _deleteTask(Task task) {
+    final tasks = context.read<TaskProvider>();
+    final pomodoro = context.read<PomodoroProvider>();
+    final analytics = context.read<AnalyticsService>();
+    final messenger = ScaffoldMessenger.of(context);
+    tasks.hideTask(task);
+    pomodoro.removeFromQueue(task);
+    AppFeedback.showUndo(
+      context,
+      'Tarea "${task.title}" borrada',
+      onUndo: tasks.restoreTask,
+      onClosed: (undone) async {
+        if (undone) return;
+        try {
+          await tasks.deleteTask(task);
+          await analytics.logEvent('task_deleted');
+        } on AppException catch (error) {
+          messenger.showSnackBar(SnackBar(content: Text(error.message)));
+          await tasks.restoreTask();
+        }
+      },
+    );
   }
 
   Future<void> _signOut() async {
@@ -200,6 +234,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               task: task,
               now: now,
               onToggleCompleted: () => _toggleCompleted(task),
+              onDelete: () => _deleteTask(task),
             );
           },
         ),
