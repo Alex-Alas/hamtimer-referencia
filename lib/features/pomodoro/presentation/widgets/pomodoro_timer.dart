@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/neo_box.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/widgets/neo_box.dart';
 
 /// Dial circular del temporizador: anillo de progreso sobre una pista hundida
 /// y, al centro, el tiempo restante en un núcleo en relieve.

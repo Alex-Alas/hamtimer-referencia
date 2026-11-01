@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../core/config/env.dart';
-import '../../../../core/errors/app_exception.dart';
+import '../../../../shared/config/env.dart';
+import '../../../../shared/errors/app_exception.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/entities/task_filter.dart';
 import '../../domain/entities/task_query.dart';

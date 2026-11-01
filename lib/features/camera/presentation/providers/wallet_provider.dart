@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../../../../core/errors/app_exception.dart';
-import '../../../../core/logging/app_logger.dart';
+import '../../../../shared/errors/app_exception.dart';
+import '../../../../shared/logging/app_logger.dart';
 import '../../domain/entities/face_filter.dart';
 import '../../domain/entities/wallet.dart';
 import '../../domain/usecases/buy_filter_usecase.dart';

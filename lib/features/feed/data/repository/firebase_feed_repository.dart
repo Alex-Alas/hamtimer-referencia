@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../../../../core/errors/app_exception.dart';
-import '../../../../core/logging/app_logger.dart';
+import '../../../../shared/errors/app_exception.dart';
+import '../../../../shared/logging/app_logger.dart';
 import '../../domain/entities/post.dart';
 import '../../domain/repositories/feed_repository.dart';
 

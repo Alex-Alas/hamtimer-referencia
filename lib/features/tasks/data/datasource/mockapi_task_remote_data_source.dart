@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../../../core/errors/app_exception.dart';
+import '../../../../shared/errors/app_exception.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/entities/task_query.dart';
 import '../models/task_json_mapper.dart';

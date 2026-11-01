@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/core/errors/app_exception.dart';
 import 'package:hamtimer/features/camera/domain/entities/face_filter.dart';
 import 'package:hamtimer/features/camera/domain/usecases/buy_filter_usecase.dart';
 import 'package:hamtimer/features/camera/domain/usecases/claim_campaign_usecase.dart';
@@ -7,6 +6,7 @@ import 'package:hamtimer/features/camera/domain/usecases/earn_points_usecase.dar
 import 'package:hamtimer/features/camera/domain/usecases/ensure_wallet_usecase.dart';
 import 'package:hamtimer/features/camera/domain/usecases/watch_wallet_usecase.dart';
 import 'package:hamtimer/features/camera/presentation/providers/wallet_provider.dart';
+import 'package:hamtimer/shared/errors/app_exception.dart';
 
 import '../fakes/fake_wallet_repository.dart';
 

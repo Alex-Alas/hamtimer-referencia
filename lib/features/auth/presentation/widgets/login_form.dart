@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/neo_button.dart';
+import '../../../../shared/widgets/neo_button.dart';
 import '../validators/auth_validators.dart';
 import 'auth_text_field.dart';
 

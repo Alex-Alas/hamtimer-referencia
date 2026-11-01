@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/widgets/edge_fade.dart';
-import '../../../../../core/widgets/neo_button.dart';
+import '../../../../../shared/theme/app_colors.dart';
+import '../../../../../shared/widgets/edge_fade.dart';
+import '../../../../../shared/widgets/neo_button.dart';
 import '../../../domain/entities/task_filter.dart';
 
 /// Fila horizontal desplazable de chips de filtro. El chip activo se ve

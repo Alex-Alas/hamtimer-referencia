@@ -4,12 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../core/logging/app_logger.dart';
-import '../core/providers/connectivity_provider.dart';
-import '../core/services/analytics_service.dart';
-import '../core/services/push_notification_service.dart';
-import '../core/widgets/bottom_nav_bar.dart';
-import '../core/widgets/feedback.dart';
 import '../features/camera/presentation/providers/wallet_provider.dart';
 import '../features/camera/presentation/screens/camera_screen.dart';
 import '../features/feed/presentation/screens/feed_screen.dart';
@@ -18,6 +12,12 @@ import '../features/tasks/domain/entities/task.dart';
 import '../features/tasks/presentation/providers/task_provider.dart';
 import '../features/tasks/presentation/screens/dashboard_screen.dart';
 import '../features/tasks/presentation/screens/new_task_screen.dart';
+import '../shared/logging/app_logger.dart';
+import '../shared/providers/connectivity_provider.dart';
+import '../shared/services/analytics_service.dart';
+import '../shared/services/push_notification_service.dart';
+import '../shared/widgets/bottom_nav_bar.dart';
+import '../shared/widgets/feedback.dart';
 
 /// Contenedor de la app con sesión iniciada: barra inferior y las cinco
 /// pantallas en un [IndexedStack].

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/theme/app_colors.dart';
 
 /// Foto de una publicación, descargada de Firebase Storage, con estados de
 /// carga y de error. Un doble toque da like, como en otras redes.

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../../../../core/errors/app_exception.dart';
+import '../../../../shared/errors/app_exception.dart';
 import '../../domain/entities/app_user.dart';
 import '../../domain/usecases/sign_in_usecase.dart';
 import '../../domain/usecases/sign_out_usecase.dart';

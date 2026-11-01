@@ -1,4 +1,4 @@
-import '../../../../core/utils/date_utils.dart';
+import '../../../../shared/utils/date_utils.dart';
 import 'task.dart';
 import 'task_category.dart';
 import 'task_query.dart';

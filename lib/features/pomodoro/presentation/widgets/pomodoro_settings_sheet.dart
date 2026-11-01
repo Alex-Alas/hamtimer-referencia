@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/labels.dart';
-import '../../../../core/widgets/neo_box.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/labels.dart';
+import '../../../../shared/widgets/neo_box.dart';
 import '../../domain/entities/pomodoro_settings.dart';
 
 /// Hoja inferior para elegir las duraciones del temporizador. Devuelve los

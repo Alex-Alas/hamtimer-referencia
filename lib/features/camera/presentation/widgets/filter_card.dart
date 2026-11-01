@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/neo_button.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/neo_button.dart';
 import '../../domain/entities/face_filter.dart';
 
 /// Tarjeta de un filtro en la tienda: emoji, nombre y, si no es tuyo, el

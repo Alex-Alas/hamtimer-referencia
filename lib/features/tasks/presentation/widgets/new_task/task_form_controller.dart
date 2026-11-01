@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../../core/errors/app_exception.dart';
-import '../../../../../core/utils/date_utils.dart';
+import '../../../../../shared/errors/app_exception.dart';
+import '../../../../../shared/utils/date_utils.dart';
 import '../../../../pomodoro/domain/entities/pomodoro_settings.dart';
 import '../../../domain/entities/duration_estimate.dart';
 import '../../../domain/entities/task.dart';

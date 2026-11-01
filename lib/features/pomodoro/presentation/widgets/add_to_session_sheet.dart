@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/errors/app_exception.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/labels.dart';
-import '../../../../core/widgets/neo_box.dart';
-import '../../../../core/widgets/neo_button.dart';
+import '../../../../shared/errors/app_exception.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/labels.dart';
+import '../../../../shared/widgets/neo_box.dart';
+import '../../../../shared/widgets/neo_button.dart';
 import '../../../tasks/domain/entities/task.dart';
 
 /// Hoja inferior "Agregar a la sesión": lista las tareas pendientes para

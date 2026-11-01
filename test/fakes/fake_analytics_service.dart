@@ -1,4 +1,4 @@
-import 'package:hamtimer/core/services/analytics_service.dart';
+import 'package:hamtimer/shared/services/analytics_service.dart';
 
 /// Guarda los eventos en una lista para revisarlos en las pruebas.
 class FakeAnalyticsService implements AnalyticsService {

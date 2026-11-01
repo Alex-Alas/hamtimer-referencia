@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/providers/connectivity_provider.dart';
-import '../../../../core/services/analytics_service.dart';
-import '../../../../core/widgets/feedback.dart';
-import '../../../../core/widgets/hamtimer_app_bar.dart';
-import '../../../../core/widgets/message_state.dart';
+import '../../../../shared/providers/connectivity_provider.dart';
+import '../../../../shared/services/analytics_service.dart';
+import '../../../../shared/widgets/feedback.dart';
+import '../../../../shared/widgets/hamtimer_app_bar.dart';
+import '../../../../shared/widgets/message_state.dart';
 import '../../domain/entities/post.dart';
 import '../providers/feed_provider.dart';
 import '../widgets/post_card.dart';

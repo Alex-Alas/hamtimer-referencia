@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/neo_button.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/neo_button.dart';
 
 /// Vista previa de la foto tomada. Devuelve `true` si el usuario quiere
 /// publicarla. Sin conexión, "Publicar" queda desactivado: el feed es lo

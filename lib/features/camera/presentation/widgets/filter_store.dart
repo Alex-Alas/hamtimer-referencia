@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/edge_fade.dart';
+import '../../../../shared/widgets/edge_fade.dart';
 import '../../domain/entities/face_filter.dart';
 import 'filter_card.dart';
 

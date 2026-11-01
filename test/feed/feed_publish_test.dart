@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/core/errors/app_exception.dart';
 import 'package:hamtimer/features/auth/domain/entities/app_user.dart';
 import 'package:hamtimer/features/feed/domain/usecases/publish_post_usecase.dart';
 import 'package:hamtimer/features/feed/domain/usecases/set_like_usecase.dart';
 import 'package:hamtimer/features/feed/domain/usecases/watch_feed_usecase.dart';
 import 'package:hamtimer/features/feed/presentation/providers/feed_provider.dart';
+import 'package:hamtimer/shared/errors/app_exception.dart';
 
 import '../fakes/fake_feed_repository.dart';
 

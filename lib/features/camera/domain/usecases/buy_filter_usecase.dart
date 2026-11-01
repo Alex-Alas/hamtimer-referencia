@@ -1,4 +1,4 @@
-import '../../../../core/errors/app_exception.dart';
+import '../../../../shared/errors/app_exception.dart';
 import '../entities/face_filter.dart';
 import '../entities/wallet.dart';
 import '../repositories/wallet_repository.dart';

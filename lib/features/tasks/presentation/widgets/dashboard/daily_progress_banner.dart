@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/theme/app_theme.dart';
-import '../../../../../core/widgets/neo_box.dart';
+import '../../../../../shared/theme/app_colors.dart';
+import '../../../../../shared/theme/app_theme.dart';
+import '../../../../../shared/widgets/neo_box.dart';
 import '../../../domain/entities/today_progress.dart';
 
 /// Banner superior "Avance del día": fracción, porcentaje y barra de progreso.

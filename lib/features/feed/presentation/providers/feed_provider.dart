@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../../../../core/errors/app_exception.dart';
+import '../../../../shared/errors/app_exception.dart';
 import '../../../auth/domain/entities/app_user.dart';
 import '../../domain/entities/post.dart';
 import '../../domain/usecases/publish_post_usecase.dart';

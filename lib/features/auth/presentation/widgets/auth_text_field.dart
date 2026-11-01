@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/field_error.dart';
-import '../../../../core/widgets/neo_box.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/widgets/field_error.dart';
+import '../../../../shared/widgets/neo_box.dart';
 
 /// Campo de texto de los formularios de acceso: un `TextFormField` dentro de
 /// una cavidad neomórfica, con el error dibujado debajo.

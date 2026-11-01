@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/theme/app_colors.dart';
 import '../../domain/entities/task_category.dart';
 import '../../domain/entities/task_priority.dart';
 

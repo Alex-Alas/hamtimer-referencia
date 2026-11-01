@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_theme.dart';
-import '../../../../../core/widgets/field_error.dart';
-import '../../../../../core/widgets/labels.dart';
-import '../../../../../core/widgets/neo_box.dart';
-import '../../../../../core/widgets/neo_button.dart';
+import '../../../../../shared/theme/app_theme.dart';
+import '../../../../../shared/widgets/field_error.dart';
+import '../../../../../shared/widgets/labels.dart';
+import '../../../../../shared/widgets/neo_box.dart';
+import '../../../../../shared/widgets/neo_button.dart';
 import 'schedule_section.dart';
 import 'task_duration_input.dart';
 import 'task_form_controller.dart';

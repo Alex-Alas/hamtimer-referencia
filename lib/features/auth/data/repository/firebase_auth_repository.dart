@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../../../core/errors/app_exception.dart';
-import '../../../../core/logging/app_logger.dart';
+import '../../../../shared/errors/app_exception.dart';
+import '../../../../shared/logging/app_logger.dart';
 import '../../domain/entities/app_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 

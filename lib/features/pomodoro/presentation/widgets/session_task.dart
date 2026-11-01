@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/neo_box.dart';
-import '../../../../core/widgets/neo_button.dart';
-import '../../../../core/widgets/pomodoro_dots.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/neo_box.dart';
+import '../../../../shared/widgets/neo_button.dart';
+import '../../../../shared/widgets/pomodoro_dots.dart';
 import '../../../tasks/domain/entities/task.dart';
 
 /// Tarjeta de una tarea dentro de la cola de la sesión. La activa lleva una

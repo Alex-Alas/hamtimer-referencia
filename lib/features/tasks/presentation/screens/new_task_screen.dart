@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/services/analytics_service.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/feedback.dart';
-import '../../../../core/widgets/hamtimer_app_bar.dart';
+import '../../../../shared/services/analytics_service.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/widgets/feedback.dart';
+import '../../../../shared/widgets/hamtimer_app_bar.dart';
 import '../../domain/entities/duration_estimate.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/usecases/estimate_task_duration_usecase.dart';

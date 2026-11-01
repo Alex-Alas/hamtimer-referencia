@@ -1,4 +1,4 @@
-import '../../../../core/utils/date_utils.dart';
+import '../../../../shared/utils/date_utils.dart';
 import 'task.dart';
 
 /// Resumen del banner "Avance del día": cuántas tareas que vencen hoy ya

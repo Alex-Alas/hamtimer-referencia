@@ -33,7 +33,7 @@ Registro → inicio de sesión → **Nueva tarea** (la IA estima los Pomodoros) 
 | c) Pomodoro | Alex M. | `pomodoro/` (ajustes, alarma, `PomodoroProvider`, pantalla y widgets) |
 | d) Nueva tarea con IA | Nehemías | `tasks/` (Gemini, `EstimateTaskDurationUseCase`, `CreateTaskUseCase`, `screens/new_task_screen.dart`, `widgets/new_task/`) |
 | e) Cámara, filtros y puntos | Alex (José Alas) | `camera/` (monedero, `BuyFilterUseCase`, ML Kit, `WalletProvider`, pantalla y widgets) |
-| f) Feed y FCM | Armando | `feed/` (casos de uso del feed, `FeedProvider`, pantalla y widgets) y `lib/core/services/push_notification_service.dart` |
+| f) Feed y FCM | Armando | `feed/` (casos de uso del feed, `FeedProvider`, pantalla y widgets) y `lib/shared/services/push_notification_service.dart` |
 
 ## Cómo ejecutar
 
@@ -116,7 +116,7 @@ solo conoce a la de abajo, siempre por contratos:
 lib/
 ├─ main.dart            raíz de composición (elige las implementaciones)
 ├─ app/                 HamtimerApp, AuthGate y HomeShell (barra inferior)
-├─ core/                config, tema, errores, logging, red (Dio), Analytics,
+├─ shared/              config, tema, errores, logging, red (Dio), Analytics,
 │                       conectividad, FCM y widgets comunes
 └─ features/<feature>/
    ├─ presentation/     screens/, widgets/, validators/, providers/ (ChangeNotifier)

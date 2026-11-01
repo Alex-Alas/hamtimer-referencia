@@ -1,5 +1,5 @@
-import '../../../../core/errors/app_exception.dart';
-import '../../../../core/logging/app_logger.dart';
+import '../../../../shared/errors/app_exception.dart';
+import '../../../../shared/logging/app_logger.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/entities/task_query.dart';
 import '../../domain/repositories/task_repository.dart';

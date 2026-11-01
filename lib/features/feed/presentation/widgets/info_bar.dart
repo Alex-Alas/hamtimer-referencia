@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/date_labels.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/utils/date_labels.dart';
 import '../../../camera/domain/entities/face_filter.dart';
 import '../../domain/entities/post.dart';
 

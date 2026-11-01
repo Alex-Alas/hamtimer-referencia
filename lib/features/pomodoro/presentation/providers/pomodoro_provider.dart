@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../../../../core/errors/app_exception.dart';
+import '../../../../shared/errors/app_exception.dart';
 import '../../../tasks/domain/entities/task.dart';
 import '../../domain/entities/pomodoro_settings.dart';
 import '../../domain/repositories/pomodoro_alarm.dart';

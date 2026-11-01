@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
-import '../../../../core/config/env.dart';
-import '../../../../core/logging/app_logger.dart';
+import '../../../../shared/config/env.dart';
+import '../../../../shared/logging/app_logger.dart';
 import '../../domain/entities/duration_estimate.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/entities/task_category.dart';

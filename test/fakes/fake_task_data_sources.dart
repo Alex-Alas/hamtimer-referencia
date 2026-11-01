@@ -1,8 +1,8 @@
-import 'package:hamtimer/core/errors/app_exception.dart';
 import 'package:hamtimer/features/tasks/data/datasource/task_local_data_source.dart';
 import 'package:hamtimer/features/tasks/data/datasource/task_remote_data_source.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task_query.dart';
+import 'package:hamtimer/shared/errors/app_exception.dart';
 
 /// MockAPI de mentira. Con [offline] lanza `NetworkException` como Dio sin red.
 class FakeTaskRemoteDataSource implements TaskRemoteDataSource {

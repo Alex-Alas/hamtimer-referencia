@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/errors/app_exception.dart';
-import '../../../../core/services/analytics_service.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/date_labels.dart';
-import '../../../../core/widgets/feedback.dart';
-import '../../../../core/widgets/hamtimer_app_bar.dart';
-import '../../../../core/widgets/message_state.dart';
-import '../../../../core/widgets/points_chip.dart';
+import '../../../../shared/errors/app_exception.dart';
+import '../../../../shared/services/analytics_service.dart';
+import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/utils/date_labels.dart';
+import '../../../../shared/widgets/feedback.dart';
+import '../../../../shared/widgets/hamtimer_app_bar.dart';
+import '../../../../shared/widgets/message_state.dart';
+import '../../../../shared/widgets/points_chip.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../camera/presentation/providers/wallet_provider.dart';
 import '../../../pomodoro/presentation/providers/pomodoro_provider.dart';

@@ -5,13 +5,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'app/app.dart';
-import 'core/config/env.dart';
-import 'core/logging/app_logger.dart';
-import 'core/network/dio_client.dart';
-import 'core/providers/connectivity_provider.dart';
-import 'core/services/analytics_service.dart';
-import 'core/services/connectivity_service.dart';
-import 'core/services/push_notification_service.dart';
 import 'features/auth/data/repository/firebase_auth_repository.dart';
 import 'features/auth/domain/usecases/sign_in_usecase.dart';
 import 'features/auth/domain/usecases/sign_out_usecase.dart';
@@ -49,6 +42,13 @@ import 'features/tasks/domain/usecases/get_tasks_usecase.dart';
 import 'features/tasks/domain/usecases/update_task_usecase.dart';
 import 'features/tasks/presentation/providers/task_provider.dart';
 import 'firebase_options.dart';
+import 'shared/config/env.dart';
+import 'shared/logging/app_logger.dart';
+import 'shared/network/dio_client.dart';
+import 'shared/providers/connectivity_provider.dart';
+import 'shared/services/analytics_service.dart';
+import 'shared/services/connectivity_service.dart';
+import 'shared/services/push_notification_service.dart';
 
 /// Recibe los mensajes de FCM con la app cerrada o en segundo plano. Debe ser
 /// una función de primer nivel; Android muestra la notificación por sí solo.

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/utils/date_labels.dart';
-import '../../../../../core/widgets/labels.dart';
-import '../../../../../core/widgets/neo_box.dart';
-import '../../../../../core/widgets/neo_button.dart';
-import '../../../../../core/widgets/pomodoro_dots.dart';
+import '../../../../../shared/theme/app_colors.dart';
+import '../../../../../shared/utils/date_labels.dart';
+import '../../../../../shared/widgets/labels.dart';
+import '../../../../../shared/widgets/neo_box.dart';
+import '../../../../../shared/widgets/neo_button.dart';
+import '../../../../../shared/widgets/pomodoro_dots.dart';
 import '../../../domain/entities/task.dart';
 import '../task_visuals.dart';
 
