@@ -13,7 +13,8 @@ Proyecto final de Desarrollo de Aplicaciones Móviles (ESEN, ciclo III 2026).
 | Plataforma | Android (minSdk 24) |
 | Estado | Provider + ChangeNotifier |
 | Tareas | MockAPI (Dio) + SQLite (sqflite) con cola de sincronización |
-| Firebase | Auth, Firestore, Storage, Analytics, Cloud Messaging, AI Logic (Gemini) |
+| Firebase | Auth, Firestore, Storage, Analytics, Cloud Messaging |
+| IA | Gemini API (`gemini-3.5-flash-lite`) con clave de Google AI Studio |
 | Proyecto Firebase | `videofeed-grupo` (compartido con VideoFeed) |
 
 ## Flujo principal (menos de 5 minutos)
@@ -81,10 +82,9 @@ firebase deploy --only firestore:rules,storage
 
 En la consola de Firebase:
 
-1. **AI Logic** → Comenzar → Gemini Developer API.
-2. **Analytics** habilitado en el proyecto.
-3. Firestore → crear `hamtimer_campaigns/bienvenida` con `{ points: 50, title: "Bienvenida" }`.
-4. Messaging → Nueva campaña → tema `hamtimer_all`, dato personalizado
+1. **Analytics** habilitado en el proyecto.
+2. Firestore → crear `hamtimer_campaigns/bienvenida` con `{ points: 50, title: "Bienvenida" }`.
+3. Messaging → Nueva campaña → tema `hamtimer_all`, dato personalizado
    `campaignId = bienvenida`.
 
 > Las reglas `firestore.rules` y `storage.rules` incluyen también las de
@@ -121,7 +121,7 @@ Repositorio    lib/repositories/*_repository.dart  (interfaces)
 Fuentes        lib/data/remote/  (Dio → MockAPI)     lib/data/local/  (sqflite → SQLite)
      │
 Servicios      lib/services/  (Analytics, Gemini, ML Kit, FCM, conectividad)
-externos       Firebase Auth · Firestore · Storage · Analytics · FCM · AI Logic · ML Kit
+externos       Firebase Auth · Firestore · Storage · Analytics · FCM · Gemini API · ML Kit
 ```
 
 - `lib/models/`: modelos puros de Dart (no importan Flutter ni Firebase).
