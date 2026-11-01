@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../domain/entities/duration_estimate.dart';
-import '../../domain/entities/task.dart';
-import '../providers/task_provider.dart';
 import '../../../../core/services/analytics_service.dart';
-import '../../domain/repositories/duration_estimator.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/feedback.dart';
 import '../../../../core/widgets/hamtimer_app_bar.dart';
+import '../../domain/entities/duration_estimate.dart';
+import '../../domain/entities/task.dart';
+import '../../domain/usecases/estimate_task_duration_usecase.dart';
+import '../providers/task_provider.dart';
 import '../widgets/new_task/create_task_form.dart';
 import '../widgets/new_task/task_form_controller.dart';
 
@@ -37,7 +37,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     final tasks = context.read<TaskProvider>();
     _controller = TaskFormController(
       onSubmit: tasks.create,
-      estimator: context.read<DurationEstimator>(),
+      estimateTaskDuration: context.read<EstimateTaskDurationUseCase>(),
       loadHistory: tasks.fetchHistory,
     );
   }

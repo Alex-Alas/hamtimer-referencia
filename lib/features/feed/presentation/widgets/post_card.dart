@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/post.dart';
 import '../../../../core/widgets/neo_box.dart';
+import '../../domain/entities/post.dart';
 import 'info_bar.dart';
 import 'post_image.dart';
 

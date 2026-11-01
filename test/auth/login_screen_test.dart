@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hamtimer/core/services/analytics_service.dart';
+import 'package:hamtimer/features/auth/domain/usecases/sign_in_usecase.dart';
+import 'package:hamtimer/features/auth/domain/usecases/sign_out_usecase.dart';
+import 'package:hamtimer/features/auth/domain/usecases/sign_up_usecase.dart';
+import 'package:hamtimer/features/auth/domain/usecases/watch_auth_state_usecase.dart';
 import 'package:hamtimer/features/auth/presentation/providers/auth_provider.dart';
 import 'package:hamtimer/features/auth/presentation/screens/login_screen.dart';
-import 'package:hamtimer/core/services/analytics_service.dart';
 import 'package:provider/provider.dart';
 
 import '../fakes/fake_analytics_service.dart';
@@ -16,7 +20,14 @@ void main() {
       MultiProvider(
         providers: [
           Provider<AnalyticsService>.value(value: analytics),
-          ChangeNotifierProvider(create: (_) => AuthProvider(repository)),
+          ChangeNotifierProvider(
+            create: (_) => AuthProvider(
+              watchAuthState: WatchAuthStateUseCase(repository),
+              signIn: SignInUseCase(repository),
+              signUp: SignUpUseCase(repository),
+              signOut: SignOutUseCase(repository),
+            ),
+          ),
         ],
         child: const MaterialApp(home: LoginScreen()),
       ),

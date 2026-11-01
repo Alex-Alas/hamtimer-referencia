@@ -6,22 +6,37 @@ import '../../domain/entities/task.dart';
 import '../../domain/entities/task_filter.dart';
 import '../../domain/entities/task_query.dart';
 import '../../domain/entities/today_progress.dart';
-import '../../domain/repositories/task_repository.dart';
+import '../../domain/usecases/create_task_usecase.dart';
+import '../../domain/usecases/delete_task_usecase.dart';
+import '../../domain/usecases/get_task_history_usecase.dart';
+import '../../domain/usecases/get_task_page_usecase.dart';
+import '../../domain/usecases/get_tasks_usecase.dart';
+import '../../domain/usecases/update_task_usecase.dart';
 
 /// Estado global de las tareas: la lista visible, su paginación, el filtro
 /// activo, el progreso del día y si los datos vienen de SQLite (sin red).
 ///
 /// Lo usan el Dashboard (lista), el formulario (crear) y el Pomodoro (sumar
 /// avance). Ninguno habla con MockAPI: todos pasan por aquí, y aquí solo se
-/// conoce el contrato [TaskRepository].
+/// conocen sus casos de uso (`domain/usecases`).
 class TaskProvider extends ChangeNotifier {
   TaskProvider({
-    required this._repository,
+    required this._getTasks,
+    required this._getTaskPage,
+    required this._getTaskHistory,
+    required this._createTask,
+    required this._updateTask,
+    required this._deleteTask,
     this.pageSize = Env.pageSize,
     DateTime Function()? clock,
   }) : _clock = clock ?? DateTime.now;
 
-  final TaskRepository _repository;
+  final GetTasksUseCase _getTasks;
+  final GetTaskPageUseCase _getTaskPage;
+  final GetTaskHistoryUseCase _getTaskHistory;
+  final CreateTaskUseCase _createTask;
+  final UpdateTaskUseCase _updateTask;
+  final DeleteTaskUseCase _deleteTask;
   final int pageSize;
   final DateTime Function() _clock;
 
@@ -117,7 +132,7 @@ class TaskProvider extends ChangeNotifier {
       if (_filter.isClientSide) {
         // MockAPI no filtra por rango de fechas: se trae todo y se filtra aquí.
         final now = _clock();
-        final all = await _repository.fetchAll(userId);
+        final all = await _getTasks(userId);
         result = TaskListResult(
           all.tasks.where((t) => _filter.matches(t, now)).toList(),
           fromCache: all.fromCache,
@@ -125,7 +140,7 @@ class TaskProvider extends ChangeNotifier {
         if (generation != _generation) return;
         _hasMore = false;
       } else {
-        result = await _repository.fetchPage(
+        result = await _getTaskPage(
           userId,
           _filter.toQuery(page: _nextPage, limit: pageSize),
         );
@@ -149,7 +164,7 @@ class TaskProvider extends ChangeNotifier {
   /// filtro ni cuántas páginas se hayan cargado.
   Future<void> _loadTodayProgress(String userId) async {
     try {
-      final all = await _repository.fetchAll(userId);
+      final all = await _getTasks(userId);
       _todayProgress = TodayProgress.fromTasks(all.tasks, _clock());
     } on AppException {
       // El banner es secundario: si falla, se queda con el último valor.
@@ -159,12 +174,12 @@ class TaskProvider extends ChangeNotifier {
   /// Tareas pendientes para agregar a la sesión de Pomodoro.
   Future<List<Task>> fetchPendingTasks() async {
     final userId = _requireUser();
-    final all = await _repository.fetchAll(userId);
+    final all = await _getTasks(userId);
     return all.tasks.where((task) => !task.isCompleted).toList(growable: false);
   }
 
   /// Historial de tareas completadas para el estimador de Gemini.
-  Future<List<Task>> fetchHistory() => _repository.fetchHistory(_requireUser());
+  Future<List<Task>> fetchHistory() => _getTaskHistory(_requireUser());
 
   // --- POST ------------------------------------------------------------------
 
@@ -172,7 +187,7 @@ class TaskProvider extends ChangeNotifier {
   /// repositorio la deja pendiente en SQLite. Lanza [AppException] si falla,
   /// para que el formulario lo muestre sin perder lo que el usuario escribió.
   Future<Task> create(TaskDraft draft) async {
-    final created = await _repository.create(_requireUser(), draft);
+    final created = await _createTask(_requireUser(), draft);
     await refresh();
     return created;
   }
@@ -188,7 +203,7 @@ class TaskProvider extends ChangeNotifier {
     final updated = task.copyWith(isCompleted: !task.isCompleted);
     _replace(updated);
     try {
-      _replace(await _repository.update(userId, updated));
+      _replace(await _updateTask(userId, updated));
       await _loadTodayProgress(userId);
       notifyListeners();
     } on AppException {
@@ -208,7 +223,7 @@ class TaskProvider extends ChangeNotifier {
   /// Borra la tarea de verdad (MockAPI y SQLite; sin red queda en la cola).
   Future<void> deleteTask(Task task) async {
     final userId = _requireUser();
-    await _repository.delete(userId, task.id);
+    await _deleteTask(userId, task.id);
     await _loadTodayProgress(userId);
     notifyListeners();
   }
@@ -219,7 +234,7 @@ class TaskProvider extends ChangeNotifier {
   /// Suma un Pomodoro a la tarea y la guarda. Lo usa el temporizador.
   Future<Task> addPomodoro(Task task) async {
     final userId = _requireUser();
-    final saved = await _repository.update(userId, task.withCompletedPomodoro());
+    final saved = await _updateTask(userId, task.withCompletedPomodoro());
     _replace(saved);
     await _loadTodayProgress(userId);
     notifyListeners();

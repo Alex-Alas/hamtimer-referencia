@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../providers/auth_provider.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/feedback.dart';
+import '../providers/auth_provider.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/login_form.dart';
-import '../../../../core/widgets/feedback.dart';
 import 'signin_screen.dart';
 
 /// Pantalla a) Inicio de sesión (Firebase Auth, clase 23).

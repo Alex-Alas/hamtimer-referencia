@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-import '../../features/tasks/domain/entities/task_category.dart';
-import '../../features/tasks/domain/entities/task_priority.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../domain/entities/task_category.dart';
+import '../../domain/entities/task_priority.dart';
 
 /// Decisiones visuales que dependen del modelo, centralizadas para que el
 /// dashboard, el formulario y el Pomodoro pinten igual una misma categoría o

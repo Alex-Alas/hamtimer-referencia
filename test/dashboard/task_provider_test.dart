@@ -1,5 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task_filter.dart';
+import 'package:hamtimer/features/tasks/domain/usecases/create_task_usecase.dart';
+import 'package:hamtimer/features/tasks/domain/usecases/delete_task_usecase.dart';
+import 'package:hamtimer/features/tasks/domain/usecases/get_task_history_usecase.dart';
+import 'package:hamtimer/features/tasks/domain/usecases/get_task_page_usecase.dart';
+import 'package:hamtimer/features/tasks/domain/usecases/get_tasks_usecase.dart';
+import 'package:hamtimer/features/tasks/domain/usecases/update_task_usecase.dart';
 import 'package:hamtimer/features/tasks/presentation/providers/task_provider.dart';
 
 import '../fakes/fake_task_repository.dart';
@@ -10,7 +16,15 @@ void main() {
     final repository = FakeTaskRepository([
       for (var i = 1; i <= 5; i++) buildTask(id: '$i', isCompleted: i == 5),
     ]);
-    final provider = TaskProvider(repository: repository, pageSize: 2)..setUser('uid-1');
+    final provider = TaskProvider(
+      getTasks: GetTasksUseCase(repository),
+      getTaskPage: GetTaskPageUseCase(repository),
+      getTaskHistory: GetTaskHistoryUseCase(repository),
+      createTask: CreateTaskUseCase(repository),
+      updateTask: UpdateTaskUseCase(repository),
+      deleteTask: DeleteTaskUseCase(repository),
+      pageSize: 2,
+    )..setUser('uid-1');
     await Future<void>.delayed(Duration.zero); // setUser agenda la carga
 
     await provider.refresh();

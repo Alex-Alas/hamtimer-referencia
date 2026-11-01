@@ -1,10 +1,10 @@
 import '../../../../core/errors/app_exception.dart';
 import '../../../../core/logging/app_logger.dart';
-import '../datasource/task_local_data_source.dart';
-import '../datasource/task_remote_data_source.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/entities/task_query.dart';
 import '../../domain/repositories/task_repository.dart';
+import '../datasource/task_local_data_source.dart';
+import '../datasource/task_remote_data_source.dart';
 
 /// Repositorio de tareas que funciona con y sin conexión.
 ///

@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../../../../core/errors/app_exception.dart';
-import '../../domain/entities/pomodoro_settings.dart';
 import '../../../tasks/domain/entities/task.dart';
-import '../../domain/repositories/pomodoro_settings_repository.dart';
+import '../../domain/entities/pomodoro_settings.dart';
 import '../../domain/repositories/pomodoro_alarm.dart';
 import '../../domain/repositories/pomodoro_progress_recorder.dart';
+import '../../domain/usecases/load_pomodoro_settings_usecase.dart';
+import '../../domain/usecases/save_pomodoro_settings_usecase.dart';
 
 /// Motor del temporizador Pomodoro y de la cola de tareas de la sesión.
 ///
@@ -24,7 +25,8 @@ import '../../domain/repositories/pomodoro_progress_recorder.dart';
 class PomodoroProvider extends ChangeNotifier {
   PomodoroProvider({
     required this._recorder,
-    required this._settingsRepository,
+    required this._loadSettings,
+    required this._saveSettings,
     this.demoMode = false,
     this._alarm = const NoPomodoroAlarm(),
     DateTime Function()? clock,
@@ -35,7 +37,8 @@ class PomodoroProvider extends ChangeNotifier {
   }
 
   final PomodoroProgressRecorder _recorder;
-  final PomodoroSettingsRepository _settingsRepository;
+  final LoadPomodoroSettingsUseCase _loadSettings;
+  final SavePomodoroSettingsUseCase _saveSettings;
 
   /// En modo demo los bloques duran segundos y no se leen las preferencias.
   final bool demoMode;
@@ -85,7 +88,7 @@ class PomodoroProvider extends ChangeNotifier {
   /// Carga las duraciones guardadas. Se llama una vez al crear el provider.
   Future<void> loadSettings() async {
     if (demoMode) return;
-    _settings = await _settingsRepository.load();
+    _settings = await _loadSettings();
     if (!isRunning) _setPhase(_phase, null);
     notifyListeners();
   }
@@ -94,7 +97,7 @@ class PomodoroProvider extends ChangeNotifier {
     _settings = settings;
     if (!isRunning) _setPhase(_phase, null);
     notifyListeners();
-    if (!demoMode) await _settingsRepository.save(settings);
+    if (!demoMode) await _saveSettings(settings);
   }
 
   // --- Controles del temporizador --------------------------------------------

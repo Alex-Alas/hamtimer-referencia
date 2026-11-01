@@ -4,7 +4,10 @@ import 'package:flutter/foundation.dart';
 
 import '../../../../core/errors/app_exception.dart';
 import '../../domain/entities/app_user.dart';
-import '../../domain/repositories/auth_repository.dart';
+import '../../domain/usecases/sign_in_usecase.dart';
+import '../../domain/usecases/sign_out_usecase.dart';
+import '../../domain/usecases/sign_up_usecase.dart';
+import '../../domain/usecases/watch_auth_state_usecase.dart';
 
 /// Estado de la sesión.
 enum AuthStatus {
@@ -19,15 +22,22 @@ enum AuthStatus {
 /// `AuthGate` lo escucha para mostrar el login o la app, y el resto de
 /// providers toman de aquí el `uid` del usuario.
 class AuthProvider extends ChangeNotifier {
-  AuthProvider(this._repository) {
-    _subscription = _repository.authStateChanges().listen((user) {
+  AuthProvider({
+    required WatchAuthStateUseCase watchAuthState,
+    required this._signIn,
+    required this._signUp,
+    required this._signOut,
+  }) {
+    _subscription = watchAuthState().listen((user) {
       _user = user;
       _status = user == null ? AuthStatus.unauthenticated : AuthStatus.authenticated;
       notifyListeners();
     });
   }
 
-  final AuthRepository _repository;
+  final SignInUseCase _signIn;
+  final SignUpUseCase _signUp;
+  final SignOutUseCase _signOut;
   late final StreamSubscription<AppUser?> _subscription;
 
   AuthStatus _status = AuthStatus.unknown;
@@ -42,12 +52,12 @@ class AuthProvider extends ChangeNotifier {
 
   /// Devuelve `true` si inició sesión; si no, deja el motivo en [errorMessage].
   Future<bool> signIn({required String email, required String password}) =>
-      _run(() => _repository.signIn(email: email, password: password));
+      _run(() => _signIn(email: email, password: password));
 
   Future<bool> signUp({required String name, required String email, required String password}) =>
-      _run(() => _repository.signUp(name: name, email: email, password: password));
+      _run(() => _signUp(name: name, email: email, password: password));
 
-  Future<void> signOut() => _repository.signOut();
+  Future<void> signOut() => _signOut();
 
   void clearError() {
     if (_errorMessage == null) return;

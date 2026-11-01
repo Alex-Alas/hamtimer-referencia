@@ -2,13 +2,13 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../../core/errors/app_exception.dart';
 import '../../../../../core/utils/date_utils.dart';
-import '../../validators/task_validators.dart';
-import '../../../domain/entities/duration_estimate.dart';
 import '../../../../pomodoro/domain/entities/pomodoro_settings.dart';
+import '../../../domain/entities/duration_estimate.dart';
 import '../../../domain/entities/task.dart';
 import '../../../domain/entities/task_category.dart';
 import '../../../domain/entities/task_priority.dart';
-import '../../../domain/repositories/duration_estimator.dart';
+import '../../../domain/usecases/estimate_task_duration_usecase.dart';
+import '../../validators/task_validators.dart';
 
 /// Estado local del formulario "Nueva tarea": valores, validación, la
 /// estimación con IA y el envío.
@@ -20,7 +20,7 @@ import '../../../domain/repositories/duration_estimator.dart';
 class TaskFormController extends ChangeNotifier {
   TaskFormController({
     required this.onSubmit,
-    required this.estimator,
+    required this.estimateTaskDuration,
     required this.loadHistory,
     DateTime? now,
   }) {
@@ -33,7 +33,7 @@ class TaskFormController extends ChangeNotifier {
   }
 
   final Future<Task> Function(TaskDraft draft) onSubmit;
-  final DurationEstimator estimator;
+  final EstimateTaskDurationUseCase estimateTaskDuration;
 
   /// Tareas completadas del usuario: el historial que usa Gemini.
   final Future<List<Task>> Function() loadHistory;
@@ -110,7 +110,7 @@ class TaskFormController extends ChangeNotifier {
 
   // --- Estimación con IA (Gemini) ----------------------------------------------
 
-  /// Pide a [estimator] cuántos Pomodoros tomará la tarea y los aplica.
+  /// Pide a [estimateTaskDuration] cuántos Pomodoros tomará la tarea y los aplica.
   ///
   /// Necesita el objetivo y la categoría. Si el vencimiento ya no alcanza
   /// para la nueva cantidad, se mueve para que el formulario quede válido.
@@ -132,7 +132,7 @@ class TaskFormController extends ChangeNotifier {
       } on AppException {
         history = const []; // Sin historial igual se puede estimar.
       }
-      final result = await estimator.estimate(
+      final result = await estimateTaskDuration(
         title: title,
         category: _category!,
         history: history,

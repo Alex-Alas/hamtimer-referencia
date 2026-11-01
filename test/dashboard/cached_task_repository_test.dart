@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hamtimer/features/tasks/data/repository/cached_task_repository.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task_category.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task_priority.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task_query.dart';
-import 'package:hamtimer/features/tasks/data/repository/cached_task_repository.dart';
 
 import '../fakes/fake_task_data_sources.dart';
 

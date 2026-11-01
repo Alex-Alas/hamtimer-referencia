@@ -2,7 +2,7 @@
 ///
 /// [apiValue] es el texto que viaja a MockAPI y a SQLite: se mantiene estable
 /// aunque la etiqueta visible cambie. El ícono de cada una vive en la capa de
-/// presentación (`widgets/common/task_visuals.dart`) para que el modelo no
+/// presentación (`presentation/widgets/task_visuals.dart`) para que el modelo no
 /// dependa de Flutter.
 enum TaskCategory {
   deepWork('deepWork', 'Trabajo profundo'),

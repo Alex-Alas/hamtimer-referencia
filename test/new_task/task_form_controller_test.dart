@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task.dart';
 import 'package:hamtimer/features/tasks/domain/entities/task_category.dart';
+import 'package:hamtimer/features/tasks/domain/usecases/estimate_task_duration_usecase.dart';
 import 'package:hamtimer/features/tasks/presentation/widgets/new_task/task_form_controller.dart';
 
 import '../fakes/fake_duration_estimator.dart';
@@ -12,7 +13,7 @@ void main() {
     final history = [buildTask(completed: 4, isCompleted: true)];
     final controller = TaskFormController(
       onSubmit: (TaskDraft draft) async => throw UnimplementedError(),
-      estimator: estimator,
+      estimateTaskDuration: EstimateTaskDurationUseCase(estimator),
       loadHistory: () async => history,
       now: DateTime(2026, 11, 1, 8, 30),
     );

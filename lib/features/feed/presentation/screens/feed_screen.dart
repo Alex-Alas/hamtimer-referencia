@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/entities/post.dart';
 import '../../../../core/providers/connectivity_provider.dart';
-import '../providers/feed_provider.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/widgets/feedback.dart';
 import '../../../../core/widgets/hamtimer_app_bar.dart';
 import '../../../../core/widgets/message_state.dart';
+import '../../domain/entities/post.dart';
+import '../providers/feed_provider.dart';
 import '../widgets/post_card.dart';
 
 /// Pantalla f) Feed: fotos con filtro de todos los usuarios, en vivo desde

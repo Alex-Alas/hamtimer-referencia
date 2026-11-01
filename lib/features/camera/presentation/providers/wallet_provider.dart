@@ -6,7 +6,11 @@ import '../../../../core/errors/app_exception.dart';
 import '../../../../core/logging/app_logger.dart';
 import '../../domain/entities/face_filter.dart';
 import '../../domain/entities/wallet.dart';
-import '../../domain/repositories/wallet_repository.dart';
+import '../../domain/usecases/buy_filter_usecase.dart';
+import '../../domain/usecases/claim_campaign_usecase.dart';
+import '../../domain/usecases/earn_points_usecase.dart';
+import '../../domain/usecases/ensure_wallet_usecase.dart';
+import '../../domain/usecases/watch_wallet_usecase.dart';
 
 /// Estado global del monedero: puntos y filtros comprados, en vivo desde
 /// Firestore.
@@ -14,9 +18,19 @@ import '../../domain/repositories/wallet_repository.dart';
 /// El Pomodoro suma puntos, la Cámara los gasta y FCM los regala; los tres
 /// pasan por aquí, así nadie más toca el documento del usuario.
 class WalletProvider extends ChangeNotifier {
-  WalletProvider(this._repository);
+  WalletProvider({
+    required this._watchWallet,
+    required this._ensureWallet,
+    required this._earnPoints,
+    required this._buyFilter,
+    required this._claimCampaign,
+  });
 
-  final WalletRepository _repository;
+  final WatchWalletUseCase _watchWallet;
+  final EnsureWalletUseCase _ensureWallet;
+  final EarnPointsUseCase _earnPoints;
+  final BuyFilterUseCase _buyFilter;
+  final ClaimCampaignUseCase _claimCampaign;
 
   static const _source = 'wallet';
   StreamSubscription<Wallet>? _subscription;
@@ -44,14 +58,14 @@ class WalletProvider extends ChangeNotifier {
     // Se agenda para no notificar mientras Flutter construye el árbol.
     Future.microtask(() {
       if (_uid != uid) return;
-      _subscription = _repository.watch(uid).listen(
+      _subscription = _watchWallet(uid).listen(
         (wallet) {
           _wallet = wallet;
           notifyListeners();
         },
         onError: (Object error) => AppLogger.warning(_source, 'No se pudo leer: $error'),
       );
-      _write('crear el monedero', _repository.ensureExists(uid));
+      _write('crear el monedero', _ensureWallet(uid));
     });
   }
 
@@ -60,24 +74,23 @@ class WalletProvider extends ChangeNotifier {
   void earn(int points) {
     final uid = _uid;
     if (uid == null || points <= 0) return;
-    _write('sumar puntos', _repository.addPoints(uid, points));
+    _write('sumar puntos', _earnPoints(uid, points));
   }
 
-  /// Compra un filtro. Lanza [AppException] con el motivo si no se puede.
-  /// Funciona sin conexión, igual que [earn].
+  /// Compra un filtro. Lanza [AppException] con el motivo si no se puede
+  /// (las reglas están en [BuyFilterUseCase]). Funciona sin conexión, igual
+  /// que [earn].
   void buy(FaceFilter filter) {
     final uid = _uid;
     if (uid == null) throw const AppException('Inicia sesión primero');
-    if (owns(filter)) throw const AppException('Ya tienes este filtro');
-    if (!_wallet.canAfford(filter.price)) throw const AppException('No te alcanzan los puntos');
-    _write('comprar ${filter.id}', _repository.buyFilter(uid, filter));
+    _write('comprar ${filter.id}', _buyFilter(uid, filter, _wallet));
   }
 
   /// Cobra una campaña de FCM. Devuelve los puntos recibidos (0 si no aplica).
   Future<int> claimCampaign(String campaignId) async {
     final uid = _uid;
     if (uid == null) return 0;
-    return _repository.claimCampaign(uid, campaignId);
+    return _claimCampaign(uid, campaignId);
   }
 
   /// Deja correr una escritura de Firestore sin esperarla y registra si falla

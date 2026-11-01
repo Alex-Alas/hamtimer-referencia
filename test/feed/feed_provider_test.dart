@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hamtimer/features/auth/domain/entities/app_user.dart';
 import 'package:hamtimer/features/feed/domain/entities/post.dart';
+import 'package:hamtimer/features/feed/domain/usecases/publish_post_usecase.dart';
+import 'package:hamtimer/features/feed/domain/usecases/set_like_usecase.dart';
+import 'package:hamtimer/features/feed/domain/usecases/watch_feed_usecase.dart';
 import 'package:hamtimer/features/feed/presentation/providers/feed_provider.dart';
 
 import '../fakes/fake_feed_repository.dart';
@@ -19,8 +22,11 @@ Post _post() => Post(
 void main() {
   test('el like es optimista y se revierte si Firestore falla', () async {
     final repository = FakeFeedRepository([_post()]);
-    final feed = FeedProvider(repository)
-      ..setUser(const AppUser(uid: 'uid-1', email: 'a@esen.edu.sv', displayName: 'Armando'));
+    final feed = FeedProvider(
+      watchFeed: WatchFeedUseCase(repository),
+      publishPost: PublishPostUseCase(repository),
+      setLike: SetLikeUseCase(repository),
+    )..setUser(const AppUser(uid: 'uid-1', email: 'a@esen.edu.sv', displayName: 'Armando'));
     await Future<void>.delayed(Duration.zero);
     expect(feed.posts.single.likes, 0);
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
-import 'face_filter_drawer.dart';
 import '../../domain/entities/face_filter.dart';
+import 'face_filter_drawer.dart';
 
 /// Dibuja el filtro elegido sobre cada cara detectada en la vista previa.
 ///

@@ -26,14 +26,14 @@ Registro → inicio de sesión → **Nueva tarea** (la IA estima los Pomodoros) 
 
 ## Pantallas y encargados
 
-| Pantalla | Encargado | Archivos principales |
+| Pantalla | Encargado | Archivos principales (`lib/features/…`) |
 |---|---|---|
-| a) Registro / Login | Jade | `lib/screens/login_screen.dart`, `signin_screen.dart`, `lib/widgets/auth/` |
-| b) Dashboard | Gisi | `lib/screens/dashboard_screen.dart`, `lib/widgets/dashboard/` |
-| c) Pomodoro | Alex M. | `lib/screens/pomodoro_screen.dart`, `lib/widgets/pomodoro/` |
-| d) Nueva tarea con IA | Nehemías | `lib/screens/new_task_screen.dart`, `lib/widgets/new_task/` |
-| e) Cámara, filtros y puntos | Alex (José Alas) | `lib/screens/camera_screen.dart`, `lib/widgets/camera/` |
-| f) Feed y FCM | Armando | `lib/screens/feed_screen.dart`, `lib/widgets/feed/`, `lib/services/push_notification_service.dart` |
+| a) Registro / Login | Jade | `auth/` (casos de uso de sesión, `AuthProvider`, login y registro) |
+| b) Dashboard | Gisi | `tasks/` (datos de tareas, casos de uso de lista, `TaskProvider`, `screens/dashboard_screen.dart`, `widgets/dashboard/`) |
+| c) Pomodoro | Alex M. | `pomodoro/` (ajustes, alarma, `PomodoroProvider`, pantalla y widgets) |
+| d) Nueva tarea con IA | Nehemías | `tasks/` (Gemini, `EstimateTaskDurationUseCase`, `CreateTaskUseCase`, `screens/new_task_screen.dart`, `widgets/new_task/`) |
+| e) Cámara, filtros y puntos | Alex (José Alas) | `camera/` (monedero, `BuyFilterUseCase`, ML Kit, `WalletProvider`, pantalla y widgets) |
+| f) Feed y FCM | Armando | `feed/` (casos de uso del feed, `FeedProvider`, pantalla y widgets) y `lib/core/services/push_notification_service.dart` |
 
 ## Cómo ejecutar
 
@@ -108,33 +108,52 @@ node tool/seed_mockapi.mjs https://<id>.mockapi.io <uid de Firebase>
 
 ## Arquitectura
 
-Capas, de arriba hacia abajo (cada una solo conoce a la de abajo, y por
-interfaces):
+Clean Architecture organizada **por feature**. Cada feature
+(`auth`, `tasks`, `pomodoro`, `camera`, `feed`) tiene tres capas, y cada capa
+solo conoce a la de abajo, siempre por contratos:
 
 ```
-Presentación   lib/screens/*_screen.dart  +  lib/widgets/<pantalla>/
-     │            (pintan estado y traducen toques en acciones)
-Estado         lib/providers/  (ChangeNotifier: Auth, Task, Pomodoro, Wallet, Feed, Connectivity)
-     │
-Repositorio    lib/repositories/*_repository.dart  (interfaces)
-     │         └─ cached_task_repository.dart, firebase_*_repository.dart, firestore_*, prefs_*
-Fuentes        lib/data/remote/  (Dio → MockAPI)     lib/data/local/  (sqflite → SQLite)
-     │
-Servicios      lib/services/  (Analytics, Gemini, ML Kit, FCM, conectividad)
-externos       Firebase Auth · Firestore · Storage · Analytics · FCM · Gemini API · ML Kit
+lib/
+├─ main.dart            raíz de composición (elige las implementaciones)
+├─ app/                 HamtimerApp, AuthGate y HomeShell (barra inferior)
+├─ core/                config, tema, errores, logging, red (Dio), Analytics,
+│                       conectividad, FCM y widgets comunes
+└─ features/<feature>/
+   ├─ presentation/     screens/, widgets/, validators/, providers/ (ChangeNotifier)
+   ├─ domain/           entities/ (Dart puro), repositories/ (contratos), usecases/
+   └─ data/             datasource/ (Dio, sqflite, Gemini, ML Kit, notificaciones),
+                        models/ (mapeo JSON), repository/ (implementaciones)
 ```
 
-- `lib/models/`: modelos puros de Dart (no importan Flutter ni Firebase).
-- `lib/core/`: configuración, tema, errores, logging, validadores y utilidades.
-- `lib/main.dart` es la **raíz de composición**: el único archivo que elige
-  las implementaciones concretas. Por eso las pruebas usan fakes
-  (`test/fakes/`) sin tocar pantallas ni providers.
+Flujo de una acción (por ejemplo, comprar un filtro):
+
+```
+Pantalla → Provider → CasoDeUso → Repository (contrato) → RepositoryImpl → DataSource → Servicio externo
+CameraScreen → WalletProvider → BuyFilterUseCase → WalletRepository → FirestoreWalletRepository → Firestore
+```
+
+| Capa del documento | Dónde vive |
+|---|---|
+| Presentación | `features/*/presentation/screens/` y `widgets/` |
+| Estado | `features/*/presentation/providers/` |
+| Casos de uso | `features/*/domain/usecases/` (21, uno por acción) |
+| Repository | contratos en `features/*/domain/repositories/`, implementaciones en `features/*/data/repository/` |
+| Fuentes de datos | `features/*/data/datasource/` (remota: Dio → MockAPI, Gemini; local: sqflite, SharedPreferences) |
+| Servicios externos | Firebase Auth · Firestore · Storage · Analytics · FCM · Gemini API · ML Kit |
+
+- `domain/entities/` son modelos puros de Dart: no importan Flutter ni Firebase.
+- Las reglas de negocio viven en los casos de uso (por ejemplo, `BuyFilterUseCase`
+  no deja comprar un filtro que ya tienes ni uno que no alcanza).
+- `lib/main.dart` es la **raíz de composición**: crea los repositorios, los
+  envuelve en casos de uso y se los pasa a los providers. Por eso las pruebas
+  usan fakes (`test/fakes/`) sin tocar pantallas ni providers.
 
 ### Decisiones y costos asumidos
 
 | Decisión | Por qué | Costo asumido |
 |---|---|---|
-| Carpetas `screens/` + `widgets/<pantalla>/` | Cada encargado trabaja en su carpeta sin chocar con los demás | Lo compartido vive en `widgets/common/` y `providers/` |
+| Clean Architecture por feature (`data/domain/presentation`) | Cada encargado trabaja en su feature sin chocar con los demás, y la regla de negocio queda separada de la UI | Más archivos: 21 casos de uso, la mayoría solo pasan la llamada al repositorio. `tasks` lo comparten Dashboard y Nueva tarea; `pomodoro` usa la entidad `Task` de `tasks` |
+| Casos de uso para todas las acciones | Un flujo uniforme: el provider nunca llama al repositorio directo | Clases cortas que hay que mantener y explicar |
 | Repository + interfaces | Las pantallas no saben si los datos vienen de MockAPI, SQLite o un fake | Más archivos que llamar a Dio directo |
 | Offline-first en tareas | La app funciona sin red salvo el feed; los cambios se guardan en una cola de SQLite y se envían al volver la conexión | Conflictos: gana el último cambio que llega a MockAPI |
 | Puntos en Firestore sin transacciones | Firestore guarda las escrituras sin red y las sube después | Las reglas validan saldo ≥ 0, pero un cliente modificado podría sumarse puntos (evitarlo requiere Cloud Functions) |

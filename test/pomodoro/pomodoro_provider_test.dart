@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hamtimer/features/pomodoro/domain/entities/pomodoro_settings.dart';
+import 'package:hamtimer/features/pomodoro/domain/usecases/load_pomodoro_settings_usecase.dart';
+import 'package:hamtimer/features/pomodoro/domain/usecases/save_pomodoro_settings_usecase.dart';
 import 'package:hamtimer/features/pomodoro/presentation/providers/pomodoro_provider.dart';
 
 import '../fakes/fake_pomodoro_collaborators.dart';
@@ -9,9 +11,11 @@ void main() {
   test('al terminar el enfoque registra el Pomodoro, da puntos y pasa al descanso', () async {
     var now = DateTime(2026, 11, 1, 9);
     final recorder = FakeProgressRecorder();
+    final settings = FakePomodoroSettingsRepository();
     final provider = PomodoroProvider(
       recorder: recorder,
-      settingsRepository: FakePomodoroSettingsRepository(),
+      loadSettings: LoadPomodoroSettingsUseCase(settings),
+      saveSettings: SavePomodoroSettingsUseCase(settings),
       demoMode: true, // bloques de 10 s
       clock: () => now,
     );

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_theme.dart';
-import '../../../domain/entities/duration_estimate.dart';
 import '../../../../../core/widgets/neo_box.dart';
 import '../../../../../core/widgets/neo_button.dart';
+import '../../../domain/entities/duration_estimate.dart';
 
 /// "Duración estimada": contador de Pomodoros con − / + y el botón
 /// "Estimar con IA", que pide a Gemini una sugerencia según el historial.

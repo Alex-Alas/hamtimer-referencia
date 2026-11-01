@@ -5,14 +5,18 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/errors/app_exception.dart';
 import '../../../auth/domain/entities/app_user.dart';
 import '../../domain/entities/post.dart';
-import '../../domain/repositories/feed_repository.dart';
+import '../../domain/usecases/publish_post_usecase.dart';
+import '../../domain/usecases/set_like_usecase.dart';
+import '../../domain/usecases/watch_feed_usecase.dart';
 
 /// Estado global del feed: las publicaciones en vivo y la publicación en
 /// curso. La Cámara publica y el Feed muestra.
 class FeedProvider extends ChangeNotifier {
-  FeedProvider(this._repository);
+  FeedProvider({required this._watchFeed, required this._publishPost, required this._setLike});
 
-  final FeedRepository _repository;
+  final WatchFeedUseCase _watchFeed;
+  final PublishPostUseCase _publishPost;
+  final SetLikeUseCase _setLike;
   StreamSubscription<List<Post>>? _subscription;
 
   AppUser? _user;
@@ -53,7 +57,7 @@ class FeedProvider extends ChangeNotifier {
 
   void _listen() {
     _isLoading = true;
-    _subscription = _repository.watchLatest().listen(
+    _subscription = _watchFeed().listen(
       (posts) {
         _posts = posts;
         _isLoading = false;
@@ -75,7 +79,7 @@ class FeedProvider extends ChangeNotifier {
     _isPublishing = true;
     notifyListeners();
     try {
-      await _repository.publish(
+      await _publishPost(
         uid: user.uid,
         authorName: user.displayName,
         pngBytes: pngBytes,
@@ -100,7 +104,7 @@ class FeedProvider extends ChangeNotifier {
     ];
     notifyListeners();
     try {
-      await _repository.setLike(postId: post.id, uid: uid, liked: liked);
+      await _setLike(postId: post.id, uid: uid, liked: liked);
     } on Exception {
       _posts = previous;
       notifyListeners();

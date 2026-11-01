@@ -4,29 +4,29 @@ import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/errors/app_exception.dart';
 import '../../../../core/logging/app_logger.dart';
+import '../../../../core/providers/connectivity_provider.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/face_filter.dart';
-import '../../../../core/providers/connectivity_provider.dart';
-import '../../../feed/presentation/providers/feed_provider.dart';
-import '../providers/wallet_provider.dart';
-import '../../../../core/services/analytics_service.dart';
-import '../../data/datasource/face_detection_service.dart';
-import '../widgets/camera_button.dart';
-import '../widgets/capture_preview_sheet.dart';
-import '../widgets/face_filter_painter.dart';
-import '../widgets/filter_store.dart';
 import '../../../../core/widgets/feedback.dart';
 import '../../../../core/widgets/hamtimer_app_bar.dart';
 import '../../../../core/widgets/message_state.dart';
 import '../../../../core/widgets/points_chip.dart';
+import '../../../feed/presentation/providers/feed_provider.dart';
+import '../../data/datasource/face_detection_service.dart';
+import '../../domain/entities/face_filter.dart';
+import '../providers/wallet_provider.dart';
+import '../widgets/camera_button.dart';
+import '../widgets/capture_preview_sheet.dart';
+import '../widgets/face_filter_painter.dart';
+import '../widgets/filter_store.dart';
 
 /// Pantalla e) Cámara con filtros en vivo (ML Kit), tienda de filtros con
 /// puntos y publicación al feed.

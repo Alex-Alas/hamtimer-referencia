@@ -7,7 +7,7 @@ import '../../../../../core/widgets/neo_box.dart';
 import '../../../../../core/widgets/neo_button.dart';
 import '../../../../../core/widgets/pomodoro_dots.dart';
 import '../../../domain/entities/task.dart';
-import '../../../../../core/widgets/task_visuals.dart';
+import '../task_visuals.dart';
 
 /// Tarjeta de una tarea en la lista: check para completarla, título, badges
 /// de prioridad / categoría / vencimiento y avance de Pomodoros.

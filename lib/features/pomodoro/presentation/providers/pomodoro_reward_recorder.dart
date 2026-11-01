@@ -1,8 +1,8 @@
-import '../../../tasks/domain/entities/task.dart';
 import '../../../camera/domain/entities/wallet.dart';
-import '../../domain/repositories/pomodoro_progress_recorder.dart';
-import '../../../tasks/presentation/providers/task_provider.dart';
 import '../../../camera/presentation/providers/wallet_provider.dart';
+import '../../../tasks/domain/entities/task.dart';
+import '../../../tasks/presentation/providers/task_provider.dart';
+import '../../domain/repositories/pomodoro_progress_recorder.dart';
 
 /// Conecta el temporizador con las tareas y el monedero.
 ///

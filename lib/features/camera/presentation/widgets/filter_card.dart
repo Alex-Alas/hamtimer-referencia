@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/face_filter.dart';
 import '../../../../core/widgets/neo_button.dart';
+import '../../domain/entities/face_filter.dart';
 
 /// Tarjeta de un filtro en la tienda: emoji, nombre y, si no es tuyo, el
 /// precio con un candado.

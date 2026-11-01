@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/face_filter.dart';
 import '../../../../core/widgets/edge_fade.dart';
+import '../../domain/entities/face_filter.dart';
 import 'filter_card.dart';
 
 /// Tienda de filtros: fila desplazable con todo el catálogo. Los filtros

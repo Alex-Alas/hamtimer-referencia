@@ -3,6 +3,9 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hamtimer/core/errors/app_exception.dart';
 import 'package:hamtimer/features/auth/domain/entities/app_user.dart';
+import 'package:hamtimer/features/feed/domain/usecases/publish_post_usecase.dart';
+import 'package:hamtimer/features/feed/domain/usecases/set_like_usecase.dart';
+import 'package:hamtimer/features/feed/domain/usecases/watch_feed_usecase.dart';
 import 'package:hamtimer/features/feed/presentation/providers/feed_provider.dart';
 
 import '../fakes/fake_feed_repository.dart';
@@ -10,7 +13,11 @@ import '../fakes/fake_feed_repository.dart';
 void main() {
   test('publicar exige sesión y manda autor y filtro al repositorio', () async {
     final repository = FakeFeedRepository([]);
-    final feed = FeedProvider(repository);
+    final feed = FeedProvider(
+      watchFeed: WatchFeedUseCase(repository),
+      publishPost: PublishPostUseCase(repository),
+      setLike: SetLikeUseCase(repository),
+    );
     final png = Uint8List.fromList([1, 2, 3]);
 
     await expectLater(
