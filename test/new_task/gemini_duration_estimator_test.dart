@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/models/duration_estimate.dart';
-import 'package:hamtimer/models/task_category.dart';
-import 'package:hamtimer/services/gemini_duration_estimator.dart';
+import 'package:hamtimer/features/tasks/domain/entities/duration_estimate.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task_category.dart';
+import 'package:hamtimer/features/tasks/data/datasource/gemini_duration_estimator.dart';
 
 import '../fakes/task_factory.dart';
 

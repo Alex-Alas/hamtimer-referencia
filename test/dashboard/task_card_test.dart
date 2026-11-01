@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/widgets/dashboard/task_card.dart';
+import 'package:hamtimer/features/tasks/presentation/widgets/dashboard/task_card.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import '../fakes/task_factory.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/providers/auth_provider.dart';
+import 'package:hamtimer/features/auth/presentation/providers/auth_provider.dart';
 
 import '../fakes/fake_auth_repository.dart';
 

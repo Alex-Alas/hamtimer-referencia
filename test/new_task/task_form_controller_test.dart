@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/models/task.dart';
-import 'package:hamtimer/models/task_category.dart';
-import 'package:hamtimer/widgets/new_task/task_form_controller.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task_category.dart';
+import 'package:hamtimer/features/tasks/presentation/widgets/new_task/task_form_controller.dart';
 
 import '../fakes/fake_duration_estimator.dart';
 import '../fakes/task_factory.dart';

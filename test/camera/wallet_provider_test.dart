@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hamtimer/core/errors/app_exception.dart';
-import 'package:hamtimer/models/face_filter.dart';
-import 'package:hamtimer/providers/wallet_provider.dart';
+import 'package:hamtimer/features/camera/domain/entities/face_filter.dart';
+import 'package:hamtimer/features/camera/presentation/providers/wallet_provider.dart';
 
 import '../fakes/fake_wallet_repository.dart';
 

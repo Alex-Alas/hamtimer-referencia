@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/providers/auth_provider.dart';
-import 'package:hamtimer/screens/login_screen.dart';
-import 'package:hamtimer/services/analytics_service.dart';
+import 'package:hamtimer/features/auth/presentation/providers/auth_provider.dart';
+import 'package:hamtimer/features/auth/presentation/screens/login_screen.dart';
+import 'package:hamtimer/core/services/analytics_service.dart';
 import 'package:provider/provider.dart';
 
 import '../fakes/fake_analytics_service.dart';

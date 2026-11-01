@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/models/face_filter.dart';
-import 'package:hamtimer/widgets/camera/filter_store.dart';
+import 'package:hamtimer/features/camera/domain/entities/face_filter.dart';
+import 'package:hamtimer/features/camera/presentation/widgets/filter_store.dart';
 
 void main() {
   testWidgets('la tienda deja usar los filtros propios y pide comprar los demás', (tester) async {

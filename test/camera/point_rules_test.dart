@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/models/face_filter.dart';
-import 'package:hamtimer/models/wallet.dart';
+import 'package:hamtimer/features/camera/domain/entities/face_filter.dart';
+import 'package:hamtimer/features/camera/domain/entities/wallet.dart';
 
 void main() {
   test('reglas de puntos y catálogo de filtros', () {

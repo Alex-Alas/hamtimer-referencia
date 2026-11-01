@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/widgets/pomodoro/pomodoro_timer.dart';
+import 'package:hamtimer/features/pomodoro/presentation/widgets/pomodoro_timer.dart';
 
 void main() {
   testWidgets('el dial muestra el tiempo restante en mm:ss y la etapa', (tester) async {

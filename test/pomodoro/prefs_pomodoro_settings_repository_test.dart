@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/models/pomodoro_settings.dart';
-import 'package:hamtimer/repositories/prefs_pomodoro_settings_repository.dart';
+import 'package:hamtimer/features/pomodoro/domain/entities/pomodoro_settings.dart';
+import 'package:hamtimer/features/pomodoro/data/repository/prefs_pomodoro_settings_repository.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/models/pomodoro_settings.dart';
-import 'package:hamtimer/providers/pomodoro_provider.dart';
+import 'package:hamtimer/features/pomodoro/domain/entities/pomodoro_settings.dart';
+import 'package:hamtimer/features/pomodoro/presentation/providers/pomodoro_provider.dart';
 
 import '../fakes/fake_pomodoro_collaborators.dart';
 import '../fakes/task_factory.dart';

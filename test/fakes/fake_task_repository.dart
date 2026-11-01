@@ -1,6 +1,6 @@
-import 'package:hamtimer/models/task.dart';
-import 'package:hamtimer/models/task_query.dart';
-import 'package:hamtimer/repositories/task_repository.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task_query.dart';
+import 'package:hamtimer/features/tasks/domain/repositories/task_repository.dart';
 
 /// Repositorio de tareas en memoria. Con [offline] responde como si las
 /// tareas vinieran de SQLite.

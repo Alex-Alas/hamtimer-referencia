@@ -3,9 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
-import 'providers/auth_provider.dart';
-import 'screens/home_shell.dart';
-import 'screens/login_screen.dart';
+import 'features/auth/presentation/providers/auth_provider.dart';
+import 'core/presentation/home_shell.dart';
+import 'features/auth/presentation/screens/login_screen.dart';
 
 /// Widget raíz: tema, idioma y la puerta de autenticación.
 class HamtimerApp extends StatelessWidget {

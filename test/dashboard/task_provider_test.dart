@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/models/task_filter.dart';
-import 'package:hamtimer/providers/task_provider.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task_filter.dart';
+import 'package:hamtimer/features/tasks/presentation/providers/task_provider.dart';
 
 import '../fakes/fake_task_repository.dart';
 import '../fakes/task_factory.dart';

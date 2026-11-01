@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/core/utils/auth_validators.dart';
+import 'package:hamtimer/features/auth/presentation/validators/auth_validators.dart';
 
 void main() {
   test('los validadores de registro rechazan datos inválidos y aceptan los buenos', () {

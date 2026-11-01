@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:hamtimer/models/post.dart';
-import 'package:hamtimer/repositories/feed_repository.dart';
+import 'package:hamtimer/features/feed/domain/entities/post.dart';
+import 'package:hamtimer/features/feed/domain/repositories/feed_repository.dart';
 
 /// Feed en memoria. Con [failLikes] el like falla, para probar la reversión.
 class FakeFeedRepository implements FeedRepository {

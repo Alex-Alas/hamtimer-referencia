@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hamtimer/core/errors/app_exception.dart';
-import 'package:hamtimer/models/app_user.dart';
-import 'package:hamtimer/providers/feed_provider.dart';
+import 'package:hamtimer/features/auth/domain/entities/app_user.dart';
+import 'package:hamtimer/features/feed/presentation/providers/feed_provider.dart';
 
 import '../fakes/fake_feed_repository.dart';
 

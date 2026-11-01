@@ -1,8 +1,8 @@
-import 'package:hamtimer/models/pomodoro_settings.dart';
-import 'package:hamtimer/models/task.dart';
-import 'package:hamtimer/models/wallet.dart';
-import 'package:hamtimer/providers/pomodoro_progress_recorder.dart';
-import 'package:hamtimer/repositories/pomodoro_settings_repository.dart';
+import 'package:hamtimer/features/pomodoro/domain/entities/pomodoro_settings.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task.dart';
+import 'package:hamtimer/features/camera/domain/entities/wallet.dart';
+import 'package:hamtimer/features/pomodoro/domain/repositories/pomodoro_progress_recorder.dart';
+import 'package:hamtimer/features/pomodoro/domain/repositories/pomodoro_settings_repository.dart';
 
 /// Registra los bloques en memoria y da los puntos de [PointRules].
 class FakeProgressRecorder implements PomodoroProgressRecorder {

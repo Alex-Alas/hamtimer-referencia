@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:hamtimer/core/errors/app_exception.dart';
-import 'package:hamtimer/models/app_user.dart';
-import 'package:hamtimer/repositories/auth_repository.dart';
+import 'package:hamtimer/features/auth/domain/entities/app_user.dart';
+import 'package:hamtimer/features/auth/domain/repositories/auth_repository.dart';
 
 /// Auth en memoria: acepta un solo usuario con la contraseña [validPassword].
 class FakeAuthRepository implements AuthRepository {

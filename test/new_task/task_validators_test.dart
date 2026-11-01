@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/core/utils/task_validators.dart';
+import 'package:hamtimer/features/tasks/presentation/validators/task_validators.dart';
 
 void main() {
   test('el horario debe terminar después de empezar y alcanzar para los Pomodoros', () {

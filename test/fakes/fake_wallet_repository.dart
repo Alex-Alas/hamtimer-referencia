@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:hamtimer/models/face_filter.dart';
-import 'package:hamtimer/models/wallet.dart';
-import 'package:hamtimer/repositories/wallet_repository.dart';
+import 'package:hamtimer/features/camera/domain/entities/face_filter.dart';
+import 'package:hamtimer/features/camera/domain/entities/wallet.dart';
+import 'package:hamtimer/features/camera/domain/repositories/wallet_repository.dart';
 
 /// Monedero en memoria que emite los cambios como lo haría Firestore.
 class FakeWalletRepository implements WalletRepository {

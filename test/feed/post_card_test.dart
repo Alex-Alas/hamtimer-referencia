@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hamtimer/models/post.dart';
-import 'package:hamtimer/widgets/feed/info_bar.dart';
+import 'package:hamtimer/features/feed/domain/entities/post.dart';
+import 'package:hamtimer/features/feed/presentation/widgets/info_bar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() {

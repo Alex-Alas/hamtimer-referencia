@@ -1,6 +1,6 @@
-import 'package:hamtimer/models/task.dart';
-import 'package:hamtimer/models/task_category.dart';
-import 'package:hamtimer/models/task_priority.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task_category.dart';
+import 'package:hamtimer/features/tasks/domain/entities/task_priority.dart';
 
 /// Crea tareas de prueba con valores por defecto razonables.
 Task buildTask({
