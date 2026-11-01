@@ -23,6 +23,8 @@ abstract final class AppFeedback {
         SnackBar(
           content: Text(message),
           duration: const Duration(seconds: 5),
+          // Con acción, Flutter deja el aviso fijo hasta tocarlo; así se cierra a los 5 s.
+          persist: false,
           action: SnackBarAction(
             label: 'Deshacer',
             onPressed: () {

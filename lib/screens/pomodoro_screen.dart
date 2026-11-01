@@ -186,6 +186,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
               const SizedBox(height: 24),
               TimerControls(
                 isRunning: store.isRunning,
+                isPaused: !store.isRunning && store.progress > 0,
                 isBreak: store.phase.isBreak,
                 onToggle: _toggleTimer,
                 onReset: store.reset,

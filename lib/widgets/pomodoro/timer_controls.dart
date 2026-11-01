@@ -8,6 +8,7 @@ class TimerControls extends StatelessWidget {
   const TimerControls({
     super.key,
     required this.isRunning,
+    required this.isPaused,
     required this.isBreak,
     required this.onToggle,
     required this.onReset,
@@ -15,6 +16,9 @@ class TimerControls extends StatelessWidget {
   });
 
   final bool isRunning;
+
+  /// Detenido a mitad de una etapa: el botón dice "Reanudar" en lugar de iniciar.
+  final bool isPaused;
   final bool isBreak;
   final VoidCallback onToggle;
   final VoidCallback onReset;
@@ -39,7 +43,7 @@ class TimerControls extends StatelessWidget {
               Icon(isRunning ? Icons.pause : Icons.play_arrow, color: AppColors.primary),
               const SizedBox(width: 6),
               Text(
-                isRunning ? 'Pausar' : startLabel,
+                isRunning ? 'Pausar' : (isPaused ? 'Reanudar' : startLabel),
                 style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primary),
               ),
             ],
